@@ -18,7 +18,8 @@ const statusMap: Record<string, { label: string; color: string }> = {
   archived: { label: "Arquivada", color: "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400" },
 };
 
-export default async function ObraDetalhesPage({ params }: { params: { id: string } }) {
+export default async function ObraDetalhesPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -40,7 +41,7 @@ export default async function ObraDetalhesPage({ params }: { params: { id: strin
   const { data: project, error } = await supabase
     .from("projects")
     .select("*")
-    .eq("id", params.id)
+    .eq("id", id)
     .eq("company_id", profile.company_id)
     .single();
 

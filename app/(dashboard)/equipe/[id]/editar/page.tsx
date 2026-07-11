@@ -26,7 +26,7 @@ export default async function EditarMembroPage({ params }: { params: Promise<{ i
     .from("profiles")
     .select("*")
     .eq("id", id)
-    .eq("company_id", profile.company_id)
+    .eq("company_id", profile.company_id as string)
     .single();
 
   if (!member) {

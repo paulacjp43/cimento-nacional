@@ -16,7 +16,7 @@ export async function cancelInvitationAction(invitationId: string) {
     .single();
 
   if (!profile || (profile.role !== "company_admin" && profile.role !== "superadmin")) {
-    throw new Error("Apenas administradores podem cancelar convites.");
+    return { error: "Apenas administradores podem cancelar convites." };
   }
 
   const { error } = await supabase
@@ -26,10 +26,11 @@ export async function cancelInvitationAction(invitationId: string) {
     .eq("company_id", profile.company_id);
 
   if (error) {
-    throw new Error(`Erro ao cancelar convite: ${error.message}`);
+    return { error: `Erro ao cancelar convite: ${error.message}` };
   }
 
   revalidatePath("/equipe");
+  return { success: true };
 }
 
 export async function editTeamMemberAction(userId: string, formData: FormData) {
@@ -45,14 +46,14 @@ export async function editTeamMemberAction(userId: string, formData: FormData) {
     .single();
 
   if (!profile || (profile.role !== "company_admin" && profile.role !== "superadmin")) {
-    throw new Error("Apenas administradores podem editar membros da equipe.");
+    return { error: "Apenas administradores podem editar membros da equipe." };
   }
 
   const role = formData.get("role") as string;
   const status = formData.get("status") as string;
 
   if (!role || !status) {
-    throw new Error("Preencha todos os campos obrigatórios.");
+    return { error: "Preencha todos os campos obrigatórios." };
   }
 
   const { error } = await supabase
@@ -62,8 +63,9 @@ export async function editTeamMemberAction(userId: string, formData: FormData) {
     .eq("company_id", profile.company_id);
 
   if (error) {
-    throw new Error(`Erro ao atualizar membro: ${error.message}`);
+    return { error: `Erro ao atualizar membro: ${error.message}` };
   }
 
   revalidatePath("/equipe");
+  return { success: true };
 }

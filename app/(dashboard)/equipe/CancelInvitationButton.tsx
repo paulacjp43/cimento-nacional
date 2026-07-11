@@ -12,7 +12,10 @@ export function CancelInvitationButton({ invitationId }: { invitationId: string 
   const handleCancel = async () => {
     setLoading(true);
     try {
-      await cancelInvitationAction(invitationId);
+      const result = await cancelInvitationAction(invitationId);
+      if (result?.error) {
+        throw new Error(result.error);
+      }
       toast.success("Convite cancelado com sucesso.");
     } catch (err: Error | unknown) {
       console.error(err);

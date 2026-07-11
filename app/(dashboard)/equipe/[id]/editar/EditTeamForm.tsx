@@ -23,7 +23,10 @@ export function EditTeamForm({ userId, initialRole, initialStatus }: EditTeamFor
 
     try {
       const formData = new FormData(e.currentTarget);
-      await editTeamMemberAction(userId, formData);
+      const result = await editTeamMemberAction(userId, formData);
+      if (result?.error) {
+        throw new Error(result.error);
+      }
       toast.success("Membro atualizado com sucesso!");
       router.push("/equipe");
     } catch (err: Error | unknown) {

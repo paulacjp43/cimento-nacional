@@ -5,6 +5,7 @@ import { MessageSquare, AlertTriangle, ArrowRight, Search, HardHat, Calendar, Re
 import { createClient } from "@/lib/supabase/client";
 import Link from "next/link";
 import { toast } from "sonner";
+import { DeleteMessageButton } from "./DeleteMessageButton";
 
 interface SectorMessage {
   id: string;
@@ -215,6 +216,10 @@ export default function ComunicacaoPage() {
     }
   }
 
+  const handleDeleteMessageState = (id: string) => {
+    setMessages((prev) => prev.filter((m) => m.id !== id));
+  };
+
   // Filter logic
   const filteredMessages = messages.filter((msg) => {
     const matchesSearch = 
@@ -341,12 +346,21 @@ export default function ComunicacaoPage() {
                       : "bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-855 shadow-sm hover:shadow-md"
                   }`}
                 >
-                  <div>
+                  <div className="p-4 relative">
                     
-                    {/* Metadados da Mensagem */}
-                    <div className="flex justify-between items-start gap-2 mb-3">
+                    {/* Header da Mensagem */}
+                    <div className="flex justify-between items-start mb-3">
                       <div>
-                        <span className="font-bold text-xs text-gray-800 dark:text-gray-200 block">{msg.sender_name}</span>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-sm text-gray-900 dark:text-white">
+                            {msg.sender_name}
+                          </h4>
+                          {(userProfile?.role === "company_admin" || userProfile?.role === "superadmin") && (
+                            <div className="ml-1">
+                              <DeleteMessageButton messageId={msg.id} onDeleted={handleDeleteMessageState} />
+                            </div>
+                          )}
+                        </div>
                         <span className="text-[10px] text-gray-400 block mt-0.5">
                           {new Date(msg.created_at).toLocaleDateString()} às {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                         </span>

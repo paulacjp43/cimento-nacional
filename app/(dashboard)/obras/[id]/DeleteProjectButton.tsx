@@ -18,9 +18,9 @@ export function DeleteProjectButton({ projectId }: DeleteProjectButtonProps) {
     try {
       await deleteProjectAction(projectId);
       toast.success("Obra excluída com sucesso.");
-    } catch (err: any) {
+    } catch (err: Error | unknown) {
       console.error(err);
-      toast.error(err.message || "Erro ao excluir obra");
+      toast.error(err instanceof Error ? err.message : "Erro ao excluir obra");
       setLoading(false);
       setShowConfirm(false);
     }

@@ -27,9 +27,9 @@ export function DeleteReportButton({ reportId, projectId, variant = "full" }: De
       if (variant === "icon") {
         router.refresh();
       }
-    } catch (err: any) {
+    } catch (err: Error | unknown) {
       console.error(err);
-      toast.error(err.message || "Erro ao excluir relatório");
+      toast.error(err instanceof Error ? err.message : "Erro ao excluir relatório");
       setLoading(false);
       setShowConfirm(false);
     }

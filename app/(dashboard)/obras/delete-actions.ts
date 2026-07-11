@@ -85,6 +85,7 @@ export async function deleteReportAction(reportId: string, projectId: string, sh
     await supabase.from("daily_report_sectors").delete().eq("daily_report_id", reportId);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await (supabase as any).from("sector_messages").delete().eq("daily_report_id", reportId);
   
   // Finally delete the report

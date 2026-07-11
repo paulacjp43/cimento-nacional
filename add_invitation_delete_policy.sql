@@ -1,0 +1,1 @@
+﻿CREATE POLICY "Company admins can delete invitations" ON invitations FOR DELETE TO authenticated USING ( company_id IN (SELECT get_my_company_id()) AND (SELECT role FROM profiles WHERE id = auth.uid()) IN ('company_admin', 'superadmin') );

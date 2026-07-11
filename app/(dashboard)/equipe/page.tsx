@@ -149,9 +149,9 @@ export default async function EquipePage() {
                   {isAdmin && (
                     <td className="px-6 py-4 text-right">
                       {member.role !== "company_admin" && (
-                        <button className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                        <a href={`/equipe/${member.id}/editar`} className="text-primary-600 hover:text-primary-700 text-sm font-medium">
                           Editar
-                        </button>
+                        </a>
                       )}
                     </td>
                   )}

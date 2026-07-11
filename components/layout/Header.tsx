@@ -17,6 +17,7 @@ export function Header({ profile }: HeaderProps) {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsOnline(navigator.onLine);
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
@@ -43,7 +44,7 @@ export function Header({ profile }: HeaderProps) {
 
   return (
     <header
-      className="sticky top-0 z-40 flex items-center justify-between px-4 lg:px-6 h-14 border-b"
+      className="sticky top-0 z-40 flex items-center justify-between px-4 lg:px-6 h-14 border-b print:hidden"
       style={{
         background: "var(--color-surface)",
         borderColor: "var(--color-border)",
@@ -66,13 +67,17 @@ export function Header({ profile }: HeaderProps) {
       {/* Logo mobile */}
       <div className="lg:hidden flex items-center gap-2">
         <div
-          className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs"
-          style={{ background: "#1e40af", color: "white" }}
+          className="w-7 h-7 rounded bg-white flex items-center justify-center flex-shrink-0 overflow-hidden p-0.5"
         >
-          G
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo.jpg"
+            alt="Logo Cimento Nacional"
+            className="w-full h-full object-contain"
+          />
         </div>
-        <span className="font-bold text-sm" style={{ color: "var(--color-text-primary)" }}>
-          GESTOBRA
+        <span className="font-bold text-xs" style={{ color: "var(--color-text-primary)" }}>
+          Cimento Nacional
         </span>
       </div>
 

@@ -49,7 +49,7 @@ export function MobileNav({ role }: MobileNavProps) {
 
   return (
     <nav
-      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t"
+      className="lg:hidden fixed bottom-0 left-0 right-0 z-50 border-t print:hidden"
       style={{
         background: "var(--color-surface)",
         borderColor: "var(--color-border)",

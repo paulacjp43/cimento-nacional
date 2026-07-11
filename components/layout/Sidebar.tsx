@@ -5,14 +5,11 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   HardHat,
-  FileText,
-  Calendar,
-  AlertTriangle,
   Users,
   Building2,
-  Settings,
   LogOut,
   ChevronRight,
+  MessageSquare,
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
@@ -44,40 +41,16 @@ const NAV_ITEMS: NavItem[] = [
     roles: ["superadmin", "company_admin", "project_manager", "civil_responsible", "electrical_responsible", "mechanical_responsible", "viewer"],
   },
   {
-    href: "/relatorios",
-    label: "Relatórios",
-    icon: <FileText className="w-4 h-4" />,
+    href: "/comunicacao",
+    label: "Comunicação",
+    icon: <MessageSquare className="w-4 h-4" />,
     roles: ["superadmin", "company_admin", "project_manager", "civil_responsible", "electrical_responsible", "mechanical_responsible", "viewer"],
   },
   {
-    href: "/calendario",
-    label: "Calendário",
-    icon: <Calendar className="w-4 h-4" />,
-    roles: ["superadmin", "company_admin", "project_manager", "civil_responsible", "electrical_responsible", "mechanical_responsible", "viewer"],
-  },
-  {
-    href: "/ocorrencias",
-    label: "Ocorrências",
-    icon: <AlertTriangle className="w-4 h-4" />,
-    roles: ["superadmin", "company_admin", "project_manager", "civil_responsible", "electrical_responsible", "mechanical_responsible", "viewer"],
-  },
-  {
-    href: "/usuarios",
-    label: "Usuários",
+    href: "/equipe",
+    label: "Equipe",
     icon: <Users className="w-4 h-4" />,
     roles: ["superadmin", "company_admin"],
-  },
-  {
-    href: "/empresa",
-    label: "Empresa",
-    icon: <Building2 className="w-4 h-4" />,
-    roles: ["company_admin"],
-  },
-  {
-    href: "/configuracoes",
-    label: "Configurações",
-    icon: <Settings className="w-4 h-4" />,
-    roles: ["company_admin"],
   },
 ];
 
@@ -108,25 +81,27 @@ export function Sidebar({ profile, company }: SidebarProps) {
   }
 
   return (
-    <aside className="sidebar hidden lg:flex" aria-label="Navegação principal">
+    <aside className="sidebar hidden lg:flex print:hidden" aria-label="Navegação principal">
       {/* Logo / Empresa */}
       <div className="p-4 border-b" style={{ borderColor: "#1e293b" }}>
         <div className="flex items-center gap-3">
           <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0"
-            style={{ background: "#1e40af", color: "white" }}
+            className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-white overflow-hidden p-0.5"
           >
-            G
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/logo.jpg"
+              alt="Logo Cimento Nacional"
+              className="w-full h-full object-contain"
+            />
           </div>
           <div className="min-w-0">
             <p className="text-white font-semibold text-sm leading-tight truncate">
-              GESTOBRA
+              {company?.name || "Cimento Nacional"}
             </p>
-            {company && (
-              <p className="text-xs truncate" style={{ color: "#64748b" }}>
-                {company.name}
-              </p>
-            )}
+            <p className="text-xs truncate" style={{ color: "#64748b" }}>
+              Gestão de Obras
+            </p>
           </div>
         </div>
       </div>

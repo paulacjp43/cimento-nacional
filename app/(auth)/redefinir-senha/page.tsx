@@ -47,6 +47,7 @@ export default function RedefinirSenhaPage() {
     formState: { errors },
   } = useForm<FormData>({ resolver: zodResolver(schema) });
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const password = watch("password", "");
 
   const rules = [

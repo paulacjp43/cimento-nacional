@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -23,7 +23,7 @@ const loginSchema = z.object({
 
 type LoginForm = z.infer<typeof loginSchema>;
 
-export default function LoginPage() {
+function LoginFormContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirect") || "/dashboard";
@@ -52,6 +52,7 @@ export default function LoginPage() {
     });
 
     if (error) {
+      console.error("Auth error details:", error);
       setIsLoading(false);
       if (
         error.message.includes("Invalid login credentials") ||
@@ -193,12 +194,49 @@ export default function LoginPage() {
         </button>
       </form>
 
+      {/* Contas de demonstração */}
+      <div className="mt-6 border border-gray-200 dark:border-gray-800 rounded-xl p-4 bg-gray-50/50 dark:bg-gray-900/10 text-xs">
+        <p className="font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          🔑 Contas de Teste
+        </p>
+        <div className="grid grid-cols-1 gap-2 text-gray-600 dark:text-gray-400">
+          <div>
+            <span className="font-semibold block text-gray-700 dark:text-gray-300">Administrador / Gestor / Fiscais</span>
+            <span className="text-[11px] block mt-0.5">
+              <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400 font-mono">admin@assp.com.br</code><br className="sm:hidden" />
+              <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400 font-mono">gestor@assp.com.br</code><br className="sm:hidden" />
+              <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400 font-mono">fiscal@assp.com.br</code>
+            </span>
+          </div>
+          <div>
+            <span className="font-semibold block text-gray-700 dark:text-gray-300">Responsáveis Setoriais (Civil, Elétrica, Mecânica)</span>
+            <span className="text-[11px] block mt-0.5">
+              <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400 font-mono">civil@assp.com.br</code><br className="sm:hidden" />
+              <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400 font-mono">eletrica@assp.com.br</code><br className="sm:hidden" />
+              <code className="bg-gray-100 dark:bg-gray-800 px-1 py-0.5 rounded text-blue-600 dark:text-blue-400 font-mono">mecanica@assp.com.br</code>
+            </span>
+          </div>
+          <div className="border-t border-gray-200 dark:border-gray-850 pt-2 mt-1.5 flex justify-between">
+            <span>Senha padrão para todos:</span>
+            <code className="font-bold text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 px-1 rounded font-mono">Gestobra@2024</code>
+          </div>
+        </div>
+      </div>
+
       {/* Info adicional */}
-      <p className="mt-8 text-center text-xs" style={{ color: "var(--color-text-muted)" }}>
+      <p className="mt-6 text-center text-[10px]" style={{ color: "var(--color-text-muted)" }}>
         O acesso ao sistema é restrito a usuários cadastrados.
         <br />
         Entre em contato com o administrador da sua empresa.
       </p>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div></div>}>
+      <LoginFormContent />
+    </Suspense>
   );
 }

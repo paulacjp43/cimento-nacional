@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { FileText, Plus, ArrowLeft, Calendar, User, Cloud, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { DeleteReportButton } from "./DeleteReportButton";
 
 export const metadata: Metadata = {
   title: "Relatórios Diários de Obra",
@@ -54,7 +55,8 @@ export default async function RdoListPage({ params }: { params: Promise<{ id: st
 
   // Verifica acesso (simplificado: admin ou membro)
   const isAdmin = profile.role === "company_admin" || profile.role === "superadmin";
-  let canEdit = isAdmin;
+  const isManager = profile.role === "project_manager";
+  let canEdit = isAdmin || isManager;
 
   if (!isAdmin) {
     const { data: isMember } = await supabase
@@ -183,12 +185,19 @@ export default async function RdoListPage({ params }: { params: Promise<{ id: st
                         </div>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <Link 
-                          href={`/obras/${project.id}/relatorios/${report.id}`}
-                          className="btn btn-primary py-1.5 px-3 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
-                        >
-                          Abrir
-                        </Link>
+                        <div className="flex items-center justify-end gap-2 relative">
+                          <Link 
+                            href={`/obras/${project.id}/relatorios/${report.id}`}
+                            className="btn btn-primary py-1.5 px-3 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            Abrir
+                          </Link>
+                          {(isAdmin || isManager) && (
+                            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                              <DeleteReportButton reportId={report.id} projectId={project.id} variant="icon" />
+                            </div>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );

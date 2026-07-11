@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { HardHat, Edit, Users, Calendar, MapPin, Building2, ChevronRight, FileText } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { DeleteProjectButton } from "./DeleteProjectButton";
 
 export const metadata: Metadata = {
   title: "Detalhes da Obra",
@@ -87,13 +88,16 @@ export default async function ObraDetalhesPage({ params }: { params: { id: strin
         </div>
         
         {isAdmin && (
-          <Link
-            href={`/obras/${project.id}/editar`}
-            className="btn btn-primary"
-          >
-            <Edit className="w-4 h-4 mr-2" />
-            Editar Obra
-          </Link>
+          <div className="flex flex-wrap items-center gap-2">
+            <DeleteProjectButton projectId={project.id} />
+            <Link
+              href={`/obras/${project.id}/editar`}
+              className="btn btn-primary"
+            >
+              <Edit className="w-4 h-4 mr-2" />
+              Editar Obra
+            </Link>
+          </div>
         )}
       </div>
 

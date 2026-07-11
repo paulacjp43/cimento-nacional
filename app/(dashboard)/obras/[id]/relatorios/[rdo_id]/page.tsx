@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import { DeleteReportButton } from "../DeleteReportButton";
 import { ArrowLeft } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -177,13 +178,17 @@ export default async function RdoDetailPage({ params }: { params: Promise<{ id: 
             Obra: {project.name} | Criado por: {report.profiles?.full_name || "Sistema"}
           </p>
         </div>
-        
-        <RdoActionButtons 
-          reportId={report.id} 
-          status={report.status as ReportStatus} 
-          canEdit={canEdit} 
-          canApprove={canApprove} 
-        />
+        <div className="flex items-center gap-2">
+          {canEdit && (
+            <DeleteReportButton reportId={report.id} projectId={project.id} />
+          )}
+          <RdoActionButtons 
+            reportId={report.id} 
+            status={report.status as ReportStatus} 
+            canEdit={canEdit} 
+            canApprove={canApprove} 
+          />
+        </div>
       </div>
 
       {/* Tabs Layout (Escondido na impressão) */}

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Users, UserPlus, Shield, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import type { Metadata } from "next";
 import { UserRole } from "@/types/database";
+import { CancelInvitationButton } from "./CancelInvitationButton";
 
 export const metadata: Metadata = {
   title: "Equipe",
@@ -185,9 +186,7 @@ export default async function EquipePage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 text-right">
-                    <button className="text-red-500 hover:text-red-600 text-sm font-medium">
-                      Cancelar
-                    </button>
+                    <CancelInvitationButton invitationId={inv.id} />
                   </td>
                 </tr>
               ))}

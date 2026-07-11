@@ -1,7 +1,6 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { revalidatePath } from "next/cache";
 
 export async function cancelInvitationAction(invitationId: string) {
@@ -20,13 +19,7 @@ export async function cancelInvitationAction(invitationId: string) {
     throw new Error("Apenas administradores podem cancelar convites.");
   }
 
-  // Use service role to bypass RLS since we haven't created a DELETE policy for invitations
-  const supabaseAdmin = createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-
-  const { error } = await supabaseAdmin
+  const { error } = await supabase
     .from("invitations")
     .delete()
     .eq("id", invitationId)
@@ -62,12 +55,7 @@ export async function editTeamMemberAction(userId: string, formData: FormData) {
     throw new Error("Preencha todos os campos obrigatórios.");
   }
 
-  const supabaseAdmin = createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-
-  const { error } = await supabaseAdmin
+  const { error } = await supabase
     .from("profiles")
     .update({ role, status })
     .eq("id", userId)

@@ -29,7 +29,12 @@ export async function createInvitation(formData: FormData) {
 
   const supabaseAdmin = createAdminClient();
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "https://cimento-nacional.vercel.app";
+  let baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "https://cimento-nacional.vercel.app";
+  
+  // Força a URL correta em produção caso a variável tenha ficado como localhost
+  if (process.env.NODE_ENV === "production" && baseUrl.includes("localhost")) {
+    baseUrl = "https://cimento-nacional.vercel.app";
+  }
 
   // Enviar convite via Auth Admin
   const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(

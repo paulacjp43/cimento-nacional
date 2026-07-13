@@ -33,10 +33,6 @@ export default async function EditarMembroPage({ params }: { params: Promise<{ i
     redirect("/equipe");
   }
 
-  // Prevent editing another admin directly to avoid getting locked out, unless superadmin
-  if (member.role === "company_admin" && profile.role !== "superadmin") {
-    redirect("/equipe");
-  }
 
   return (
     <div className="fade-in space-y-6 max-w-2xl mx-auto">

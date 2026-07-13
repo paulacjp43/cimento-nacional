@@ -93,9 +93,6 @@ export async function deleteTeamMemberAction(userId: string) {
     .eq("id", userId)
     .single();
 
-  if (targetProfile?.role === "company_admin" && profile.role !== "superadmin") {
-    throw new Error("Apenas o Super Admin pode excluir outro administrador.");
-  }
 
   const { error } = await supabase
     .from("profiles")

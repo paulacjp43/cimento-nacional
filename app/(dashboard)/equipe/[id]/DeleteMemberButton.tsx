@@ -1,22 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { cancelInvitationAction } from "./actions";
+import { deleteTeamMemberAction } from "../actions";
 
-export function CancelInvitationButton({ invitationId }: { invitationId: string }) {
+export function DeleteMemberButton({ userId, memberName }: { userId: string; memberName: string }) {
   const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleCancel = async () => {
+  const handleDelete = async () => {
     setLoading(true);
     try {
-      await cancelInvitationAction(invitationId);
-      toast.success("Convite cancelado com sucesso.");
+      await deleteTeamMemberAction(userId);
+      toast.success(`${memberName} foi removido da equipe.`);
     } catch (err: Error | unknown) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Erro ao cancelar convite");
+      toast.error(err instanceof Error ? err.message : "Erro ao excluir membro");
       setLoading(false);
       setShowConfirm(false);
     }
@@ -25,9 +25,9 @@ export function CancelInvitationButton({ invitationId }: { invitationId: string 
   if (showConfirm) {
     return (
       <div className="flex items-center gap-2 justify-end">
-        <span className="text-xs text-red-600 font-medium">Cancelar?</span>
+        <span className="text-xs text-red-600 font-medium">Excluir?</span>
         <button
-          onClick={handleCancel}
+          onClick={handleDelete}
           disabled={loading}
           className="text-xs bg-red-600 text-white px-2 py-1 rounded"
         >
@@ -47,10 +47,10 @@ export function CancelInvitationButton({ invitationId }: { invitationId: string 
   return (
     <button
       onClick={() => setShowConfirm(true)}
-      className="text-red-500 hover:text-red-600 text-sm font-medium"
-      title="Cancelar Convite"
+      className="p-1 text-gray-400 hover:text-red-600 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+      title="Excluir Membro"
     >
-      Cancelar
+      <Trash2 className="w-3.5 h-3.5" />
     </button>
   );
 }

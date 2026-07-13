@@ -4,6 +4,7 @@ import { Users, UserPlus, Shield, CheckCircle2, Clock, AlertCircle } from "lucid
 import type { Metadata } from "next";
 import { UserRole } from "@/types/database";
 import { CancelInvitationButton } from "./CancelInvitationButton";
+import { DeleteMemberButton } from "./[id]/DeleteMemberButton";
 
 export const metadata: Metadata = {
   title: "Equipe",
@@ -148,10 +149,13 @@ export default async function EquipePage() {
                   </td>
                   {isAdmin && (
                     <td className="px-6 py-4 text-right">
-                      {member.role !== "company_admin" && (
-                        <a href={`/equipe/${member.id}/editar`} className="text-primary-600 hover:text-primary-700 text-sm font-medium">
-                          Editar
-                        </a>
+                      {member.id !== user.id && (
+                        <div className="flex items-center justify-end gap-2">
+                          <a href={`/equipe/${member.id}/editar`} className="text-primary-600 hover:text-primary-700 text-sm font-medium">
+                            Editar
+                          </a>
+                          <DeleteMemberButton userId={member.id} memberName={member.full_name} />
+                        </div>
                       )}
                     </td>
                   )}

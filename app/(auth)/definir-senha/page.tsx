@@ -62,27 +62,14 @@ export default function DefinirSenhaPage() {
       return;
     }
 
-    // Atualiza o status do convite (auditoria) e vincula o perfil à empresa
-    if (user?.email) {
-      const { data: inv, error: invError } = await supabase
-        .from("invitations")
-        .update({ 
-          status: "accepted", 
-          accepted_at: new Date().toISOString() 
-        })
-        .eq("email", user.email)
-        .select("company_id, role")
-        .single();
-
-      if (inv) {
-        // Atualiza o profile do usuário com a empresa e o nível de acesso corretos
-        await supabase
-          .from("profiles")
-          .update({
-            company_id: inv.company_id,
-            role: inv.role
-          })
-          .eq("id", user.id);
+    // Atualiza o status do convite e vincula o perfil à empresa com privilégios de Admin
+    if (user?.email && user?.id) {
+      const { acceptInvitation } = await import("./actions");
+      const result = await acceptInvitation(user.email, user.id);
+      
+      if (!result.success) {
+        console.error("Aviso: Falha ao aceitar o convite:", result.error);
+        // Não bloqueamos o fluxo, mas o usuário pode ficar sem acesso à empresa
       }
     }
 

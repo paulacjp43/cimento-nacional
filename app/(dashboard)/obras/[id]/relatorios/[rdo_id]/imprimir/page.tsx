@@ -142,14 +142,7 @@ export default async function RdoPrintPage({ params }: { params: Promise<{ id: s
           <ArrowLeft className="w-4 h-4 mr-2" /> Voltar para o RDO
         </Link>
         <div className="flex items-center gap-3">
-          <span className="text-sm text-slate-500 hidden md:inline-block">Visão Consolidada (Preview de Impressão)</span>
-          <button 
-            // eslint-disable-next-line react-hooks/rules-of-hooks
-            onClick={() => {}} 
-            // Tive que colocar um botão interativo como cliente, vou transformar a page em client ou injetar um client component.
-            // Para resolver rapidamente:
-            className="hidden" // Will add client component for print button
-          />
+          <span className="text-slate-500 text-sm font-medium">Visão Consolidada (Preview de Impressão)</span>
           {/* Client component wrapper for print */}
           <PrintButton />
         </div>

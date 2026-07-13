@@ -137,13 +137,19 @@ export function RdoPrintLayout({
           <div className="p-4 border border-slate-200 rounded-lg">
             <span className="text-slate-500 block text-xs font-semibold mb-1">Manhã</span>
             <span className="font-bold text-slate-800 flex items-center gap-2">
-              <morningWeather.icon className="w-4 h-4" /> {morningWeather.label}
+              {(() => {
+                const Icon = morningWeather.icon;
+                return Icon ? <Icon className="w-4 h-4" /> : null;
+              })()} {morningWeather.label}
             </span>
           </div>
           <div className="p-4 border border-slate-200 rounded-lg">
             <span className="text-slate-500 block text-xs font-semibold mb-1">Tarde</span>
             <span className="font-bold text-slate-800 flex items-center gap-2">
-              <afternoonWeather.icon className="w-4 h-4" /> {afternoonWeather.label}
+              {(() => {
+                const Icon = afternoonWeather.icon;
+                return Icon ? <Icon className="w-4 h-4" /> : null;
+              })()} {afternoonWeather.label}
             </span>
           </div>
           <div className="p-4 border border-slate-200 rounded-lg">

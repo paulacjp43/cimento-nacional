@@ -101,10 +101,12 @@ export function AddMemberForm({ projectId, availableUsers }: AddMemberFormProps)
             id="role" 
             required
             className="input w-full"
-            defaultValue="member"
+            defaultValue="civil"
           >
             <option value="manager">Gestor</option>
-            <option value="member">Membro / Engenheiro</option>
+            <option value="civil">Engenheiro / Membro (Civil)</option>
+            <option value="electrical">Engenheiro / Membro (Elétrica)</option>
+            <option value="mechanical">Engenheiro / Membro (Mecânica)</option>
             <option value="viewer">Visualizador</option>
           </select>
         </div>

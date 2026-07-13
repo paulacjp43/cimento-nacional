@@ -12,7 +12,9 @@ export const metadata: Metadata = {
 
 const projectRoleMap: Record<string, { label: string; color: string }> = {
   manager: { label: "Gestor", color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300" },
-  member: { label: "Membro", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" },
+  civil: { label: "Civil", color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" },
+  electrical: { label: "Elétrica", color: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300" },
+  mechanical: { label: "Mecânica", color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300" },
   viewer: { label: "Visualizador", color: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-300" },
 };
 
@@ -153,8 +155,8 @@ export default async function ProjectTeamPage({ params }: { params: Promise<{ id
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex flex-col gap-1.5">
-                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium flex items-center w-fit gap-1.5 ${projectRoleMap[pm.role || 'member']?.color || projectRoleMap['member'].color}`}>
-                              {projectRoleMap[pm.role || 'member']?.label || pm.role}
+                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium flex items-center w-fit gap-1.5 ${projectRoleMap[pm.role]?.color || "bg-gray-100 text-gray-800"}`}>
+                              {projectRoleMap[pm.role]?.label || pm.role}
                             </span>
                             {pm.sector && (
                               <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">

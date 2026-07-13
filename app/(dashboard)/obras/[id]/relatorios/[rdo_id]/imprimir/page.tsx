@@ -95,7 +95,7 @@ export default async function RdoPrintPage({ params }: { params: Promise<{ id: s
     .select("*")
     .eq("daily_report_id", rdo_id);
 
-  const activities = ["civil", "eletrica", "mecanica"].map(s => {
+  const activities = ["civil", "eletrica", "mecanica", "safety"].map(s => {
     const existing = (activitiesData || []).find(d => d.sector === s);
     return existing || {
       sector: s,

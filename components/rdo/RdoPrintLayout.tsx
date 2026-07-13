@@ -48,14 +48,7 @@ const severityMap: Record<string, string> = {
   critical: "Crítica",
 };
 
-const statusLabelMap: Record<string, string> = {
-  draft: "Rascunho",
-  submitted: "Enviado",
-  under_review: "Em Revisão",
-  approved: "Aprovado",
-  returned: "Devolvido",
-  cancelled: "Cancelado",
-};
+import { REPORT_STATUS_LABELS } from "@/lib/constants";
 
 export function RdoPrintLayout({ 
   report, 
@@ -77,7 +70,7 @@ export function RdoPrintLayout({
 
   const morningWeather = weatherMap[report.weather_morning] || weatherMap.other;
   const afternoonWeather = weatherMap[report.weather_afternoon] || weatherMap.other;
-  const statusLabel = statusLabelMap[report.status] || "Rascunho";
+  const statusLabel = REPORT_STATUS_LABELS[report.status as keyof typeof REPORT_STATUS_LABELS] || "Rascunho";
 
   const sectorsList = [
     { id: "civil", label: "Civil" },
@@ -179,7 +172,7 @@ export function RdoPrintLayout({
 
         <div className="mt-auto pt-8 border-t border-slate-200">
           <h3 className="text-sm font-bold text-slate-800 mb-4 text-center">Resumo de Aprovações</h3>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {sectorsList.map(s => {
               const sec = activities.find(a => a.sector === s.id) || { status: 'draft' };
               const isApproved = sec.status === 'approved';
@@ -187,7 +180,7 @@ export function RdoPrintLayout({
                 <div key={s.id} className="text-center p-3 border border-slate-200 rounded bg-slate-50">
                   <span className="block font-bold text-slate-800">{s.label}</span>
                   <span className={`text-xs font-semibold mt-1 block ${isApproved ? 'text-green-600' : 'text-slate-500'}`}>
-                    {statusLabelMap[sec.status] || "Pendente"}
+                    {REPORT_STATUS_LABELS[sec.status as keyof typeof REPORT_STATUS_LABELS] || "Pendente"}
                   </span>
                 </div>
               );
@@ -213,7 +206,7 @@ export function RdoPrintLayout({
         const isOptimizedHidden = sectorActivities.status === 'not_applicable';
         if (isOptimizedHidden) return null;
 
-        const secStatusLabel = statusLabelMap[sectorActivities.status] || "Pendente";
+        const secStatusLabel = REPORT_STATUS_LABELS[sectorActivities.status as keyof typeof REPORT_STATUS_LABELS] || "Pendente";
         
         // Extrai as métricas de segurança (se for o setor safety)
         const safetyMetrics = sectorActivities.safety_metrics as any || {};

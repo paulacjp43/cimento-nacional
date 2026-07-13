@@ -7,6 +7,7 @@ const PUBLIC_ROUTES = [
   "/login",
   "/esqueci-senha",
   "/redefinir-senha",
+  "/definir-senha",
   "/primeiro-acesso",
   "/convite",
 ];

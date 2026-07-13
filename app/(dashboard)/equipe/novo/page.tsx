@@ -2,15 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { UserPlus, ArrowLeft, Check, Copy, Shield, AlertCircle } from "lucide-react";
+import { UserPlus, ArrowLeft, Check, Shield, AlertCircle } from "lucide-react";
 import { createInvitation } from "./actions";
 
 export default function NovoMembroPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [successToken, setSuccessToken] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -22,23 +21,14 @@ export default function NovoMembroPage() {
 
     if (result.error) {
       setError(result.error);
-    } else if (result.success && result.token) {
-      setSuccessToken(result.token);
+    } else if (result.success) {
+      setSuccess(true);
     }
     
     setLoading(false);
   };
 
-  const copyToClipboard = () => {
-    if (typeof window !== "undefined" && successToken) {
-      const inviteUrl = `${window.location.origin}/cadastro?token=${successToken}`;
-      navigator.clipboard.writeText(inviteUrl);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 3000);
-    }
-  };
-
-  if (successToken) {
+  if (success) {
     return (
       <div className="fade-in space-y-6 max-w-xl mx-auto mt-8">
         <div className="card p-8 text-center space-y-6">
@@ -47,22 +37,10 @@ export default function NovoMembroPage() {
           </div>
           
           <div>
-            <h2 className="text-xl font-semibold mb-2">Convite Gerado com Sucesso!</h2>
+            <h2 className="text-xl font-semibold mb-2">Convite Enviado com Sucesso!</h2>
             <p className="text-muted-foreground text-sm">
-              Copie o link abaixo e envie para o funcionário por WhatsApp ou E-mail. Quando ele acessar, já estará vinculado à sua empresa com o perfil escolhido.
+              Um e-mail foi enviado diretamente para o funcionário pelo sistema. Quando ele acessar e definir sua senha, já estará vinculado à sua empresa.
             </p>
-          </div>
-
-          <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg flex items-center gap-3">
-            <code className="text-sm text-primary-600 flex-1 truncate text-left">
-              {typeof window !== "undefined" ? `${window.location.origin}/cadastro?token=${successToken}` : ''}
-            </code>
-            <button 
-              onClick={copyToClipboard}
-              className="btn btn-primary py-2 px-3 shrink-0"
-            >
-              {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-            </button>
           </div>
 
           <button
@@ -88,7 +66,7 @@ export default function NovoMembroPage() {
         <div>
           <h1 className="page-title">Convidar Membro</h1>
           <p className="page-subtitle text-sm">
-            Gere um link seguro para o novo membro se cadastrar.
+            Envie um convite seguro por e-mail para o novo membro.
           </p>
         </div>
       </div>
@@ -155,10 +133,10 @@ export default function NovoMembroPage() {
               disabled={loading}
               className="btn btn-primary"
             >
-              {loading ? "Gerando link..." : (
+              {loading ? "Enviando Convite..." : (
                 <>
                   <UserPlus className="w-4 h-4 mr-2" />
-                  Gerar Link de Convite
+                  Enviar Convite por E-mail
                 </>
               )}
             </button>

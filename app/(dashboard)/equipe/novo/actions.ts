@@ -29,10 +29,7 @@ export async function createInvitation(formData: FormData) {
 
   const supabaseAdmin = createAdminClient();
 
-  const { headers } = await import("next/headers");
-  const host = headers().get("host") || "localhost:3000";
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
-  const origin = `${protocol}://${host}`;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || "https://cimento-nacional.vercel.app";
 
   // Enviar convite via Auth Admin
   const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
@@ -42,8 +39,8 @@ export async function createInvitation(formData: FormData) {
         role: role,
         company_id: profile.company_id,
       },
-      // Configurar o redirecionamento para a tela de definição de senha
-      redirectTo: `${origin}/definir-senha`
+      // Configurar o redirecionamento para o callback correto do fluxo SSR (PKCE)
+      redirectTo: `${baseUrl}/auth/callback?next=/definir-senha`
     }
   );
 

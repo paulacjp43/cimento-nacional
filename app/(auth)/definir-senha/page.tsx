@@ -36,8 +36,14 @@ export default function DefinirSenhaPage() {
     setLoading(true);
     setError(null);
 
-    if (password.length < 6) {
-      setError("A senha deve ter no mínimo 6 caracteres.");
+    if (password.length < 8) {
+      setError("A senha deve ter no mínimo 8 caracteres.");
+      setLoading(false);
+      return;
+    }
+
+    if (!/[A-Za-z]/.test(password) || !/[0-9]/.test(password)) {
+      setError("A senha deve conter pelo menos uma letra e um número.");
       setLoading(false);
       return;
     }
@@ -56,8 +62,8 @@ export default function DefinirSenhaPage() {
     });
 
     if (updateError) {
-      console.error(updateError);
-      setError("Erro ao definir a senha. Tente novamente.");
+      console.error("Erro ao definir senha:", updateError);
+      setError("Erro ao definir a senha. O convite pode estar expirado.");
       setLoading(false);
       return;
     }
@@ -142,15 +148,18 @@ export default function DefinirSenhaPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  autoComplete="new-password"
+                  inputMode="text"
+                  minLength={8}
                   placeholder="••••••••"
-                  className="input pr-10"
+                  className="input pr-10 text-[16px] min-h-[44px]"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -165,15 +174,18 @@ export default function DefinirSenhaPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
+                  autoComplete="new-password"
+                  inputMode="text"
+                  minLength={8}
                   placeholder="••••••••"
-                  className="input pr-10"
+                  className="input pr-10 text-[16px] min-h-[44px]"
                 />
                 <button
                   type="button"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 min-w-[44px] min-h-[44px] flex items-center justify-center"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 >
-                  {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
               </div>
             </div>

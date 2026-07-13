@@ -10,6 +10,7 @@ const PUBLIC_ROUTES = [
   "/definir-senha",
   "/primeiro-acesso",
   "/convite",
+  "/auth/callback",
 ];
 
 // Rotas exclusivas do superadmin

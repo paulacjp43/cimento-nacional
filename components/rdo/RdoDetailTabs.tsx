@@ -3,15 +3,10 @@
 import { useState, useEffect } from "react";
 import { FileText, Users, HardHat, Package, CheckSquare, Image as ImageIcon, AlertTriangle, MessageSquare } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-// Import sub-components for tabs (we'll build these next)
-import { WorkforceTab } from "./WorkforceTab";
-import { ActivitiesTab } from "./ActivitiesTab";
-import { EquipmentTab } from "./EquipmentTab";
-import { MaterialsTab } from "./MaterialsTab";
-import { AttachmentsTab } from "./AttachmentsTab";
-import { OccurrencesTab } from "./OccurrencesTab";
 import { GeneralTab } from "./GeneralTab";
 import { CommunicationTab } from "./CommunicationTab";
+import { SectorTab } from "./SectorTab";
+import { AttachmentsTab } from "./AttachmentsTab";
 
 import { useSearchParams } from "next/navigation";
 
@@ -20,9 +15,11 @@ interface RdoDetailTabsProps {
   report: any; // Using any for rapid dev, ideally use Database types
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   project: any;
+  userRole?: string;
+  canEditGlobal?: boolean;
 }
 
-export function RdoDetailTabs({ report, project }: RdoDetailTabsProps) {
+export function RdoDetailTabs({ report, project, userRole, canEditGlobal = true }: RdoDetailTabsProps) {
   const searchParams = useSearchParams();
   const tabParam = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState("geral");
@@ -56,15 +53,13 @@ export function RdoDetailTabs({ report, project }: RdoDetailTabsProps) {
   }, [report.id]);
 
   const tabs = [
-    { id: "geral", label: "Dados Gerais", icon: FileText },
-    { id: "efetivo", label: "Efetivo", icon: Users },
-    { id: "equipamentos", label: "Equipamentos", icon: HardHat },
-    { id: "atividades", label: "Atividades", icon: CheckSquare },
-    { id: "materiais", label: "Materiais", icon: Package },
-    { id: "ocorrencias", label: "Ocorrências", icon: AlertTriangle },
-    { id: "comunicacao", label: "Comunicação", icon: MessageSquare },
-    { id: "fotos", label: "Fotos / Anexos", icon: ImageIcon },
-  ];
+    { id: "geral", label: "Dados Gerais", icon: FileText, show: true },
+    { id: "civil", label: "Civil", icon: HardHat, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'civil_responsible' },
+    { id: "eletrica", label: "Elétrica", icon: CheckSquare, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'electrical_responsible' },
+    { id: "mecanica", label: "Mecânica", icon: Package, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'mechanical_responsible' },
+    { id: "comunicacao", label: "Comunicação", icon: MessageSquare, show: true },
+    { id: "fotos", label: "Fotos Gerais", icon: ImageIcon, show: true }, // We might keep a general photos tab if needed, or remove it. Let's keep it for now.
+  ].filter(t => t.show);
 
   return (
     <div className="space-y-6">
@@ -127,33 +122,24 @@ export function RdoDetailTabs({ report, project }: RdoDetailTabsProps) {
           </div>
         )}
 
-        {activeTab === "efetivo" && (
-          <div className="card p-6 fade-in">
-            <WorkforceTab reportId={report.id} companyId={report.company_id} />
+        {activeTab === "civil" && (
+          <div className="fade-in">
+            <h3 className="text-lg font-medium mb-4 pb-2 border-b dark:border-gray-800">Setor Civil</h3>
+            <SectorTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="civil" canEdit={canEditGlobal && (userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'civil_responsible')} />
           </div>
         )}
 
-        {activeTab === "equipamentos" && (
-          <div className="card p-6 fade-in">
-            <EquipmentTab reportId={report.id} companyId={report.company_id} />
+        {activeTab === "eletrica" && (
+          <div className="fade-in">
+            <h3 className="text-lg font-medium mb-4 pb-2 border-b dark:border-gray-800">Setor Elétrica</h3>
+            <SectorTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="eletrica" canEdit={canEditGlobal && (userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'electrical_responsible')} />
           </div>
         )}
 
-        {activeTab === "atividades" && (
-          <div className="card p-6 fade-in">
-            <ActivitiesTab reportId={report.id} companyId={report.company_id} />
-          </div>
-        )}
-
-        {activeTab === "materiais" && (
-          <div className="card p-6 fade-in">
-            <MaterialsTab reportId={report.id} companyId={report.company_id} />
-          </div>
-        )}
-
-        {activeTab === "ocorrencias" && (
-          <div className="card p-6 fade-in">
-            <OccurrencesTab reportId={report.id} companyId={report.company_id} projectId={project.id} />
+        {activeTab === "mecanica" && (
+          <div className="fade-in">
+            <h3 className="text-lg font-medium mb-4 pb-2 border-b dark:border-gray-800">Setor Mecânica</h3>
+            <SectorTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="mecanica" canEdit={canEditGlobal && (userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'mechanical_responsible')} />
           </div>
         )}
 
@@ -165,7 +151,9 @@ export function RdoDetailTabs({ report, project }: RdoDetailTabsProps) {
 
         {activeTab === "fotos" && (
           <div className="card p-6 fade-in">
-            <AttachmentsTab reportId={report.id} companyId={report.company_id} projectId={project.id} />
+            <h3 className="text-lg font-medium mb-4 pb-2 border-b dark:border-gray-800">Fotos Gerais da Obra</h3>
+            {/* Sector 'geral' or empty, but let's use 'geral' for general photos */}
+            <AttachmentsTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="geral" canEdit={canEditGlobal} />
           </div>
         )}
       </div>

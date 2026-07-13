@@ -5,7 +5,7 @@ import { Plus, Trash2, Loader2, Tractor } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
-export function EquipmentTab({ reportId, companyId }: { reportId: string, companyId: string }) {
+export function EquipmentTab({ reportId, companyId, sector, canEdit = true }: { reportId: string, companyId: string, sector: string, canEdit?: boolean }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [entries, setEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -19,6 +19,7 @@ export function EquipmentTab({ reportId, companyId }: { reportId: string, compan
         .from("equipment_entries")
         .select("*")
         .eq("daily_report_id", reportId)
+        .eq("sector", sector as any)
         .order("created_at", { ascending: true });
         
       if (error) throw error;
@@ -46,7 +47,7 @@ export function EquipmentTab({ reportId, companyId }: { reportId: string, compan
       owner_company: "",
       hours_used: "",
       status: "operating",
-      sector: "civil", // Default
+      sector: sector,
       observations: "",
     };
     setEntries([...entries, newRow]);

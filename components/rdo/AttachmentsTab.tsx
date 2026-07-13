@@ -17,7 +17,7 @@ interface Attachment {
   url: string | null;
 }
 
-export function AttachmentsTab({ reportId, companyId, projectId }: { reportId: string, companyId: string, projectId: string }) {
+export function AttachmentsTab({ reportId, companyId, projectId, sector, canEdit = true }: { reportId: string, companyId: string, projectId: string, sector: string, canEdit?: boolean }) {
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
@@ -31,6 +31,7 @@ export function AttachmentsTab({ reportId, companyId, projectId }: { reportId: s
         .from("attachments")
         .select("*")
         .eq("daily_report_id", reportId)
+        .eq("daily_report_sector_id", sector as any) // Using daily_report_sector_id column for sector string since it maps to the sector in DB (or wait, attachments has 'daily_report_sector_id' as UUID?)
         .order("created_at", { ascending: false });
         
       if (error) throw error;
@@ -99,6 +100,7 @@ export function AttachmentsTab({ reportId, companyId, projectId }: { reportId: s
         company_id: companyId,
         project_id: projectId,
         daily_report_id: reportId,
+        daily_report_sector_id: sector,
         file_name: uniqueFileName,
         original_name: file.name,
         file_type: fileExt?.toLowerCase() || "unknown",

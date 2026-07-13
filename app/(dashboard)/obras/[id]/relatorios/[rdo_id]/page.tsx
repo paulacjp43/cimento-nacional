@@ -184,6 +184,7 @@ export default async function RdoDetailPage({ params }: { params: Promise<{ id: 
           )}
           <RdoActionButtons 
             reportId={report.id} 
+            projectId={project.id}
             status={report.status as ReportStatus} 
             canEdit={canEdit} 
             canApprove={canApprove} 
@@ -194,7 +195,7 @@ export default async function RdoDetailPage({ params }: { params: Promise<{ id: 
       {/* Tabs Layout (Escondido na impressão) */}
       <div className="print:hidden">
         <Suspense fallback={<div className="py-10 text-center text-xs text-gray-500">Carregando abas...</div>}>
-          <RdoDetailTabs report={report} project={project} />
+          <RdoDetailTabs report={report} project={project} userRole={profile.role} canEditGlobal={canEdit} />
         </Suspense>
       </div>
 

@@ -2,22 +2,20 @@
 
 import { useState } from "react";
 import { Printer, Send, CheckCircle, XCircle, Loader2 } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { updateAllSectorsStatusAction } from "@/app/(dashboard)/obras/[id]/relatorios/actions";
 import { ReportStatus } from "@/types/database";
 
 interface RdoActionButtonsProps {
   reportId: string;
+  projectId: string;
   status: ReportStatus;
   canEdit: boolean;
   canApprove: boolean;
 }
 
-export function RdoActionButtons({ reportId, status, canEdit, canApprove }: RdoActionButtonsProps) {
+export function RdoActionButtons({ reportId, projectId, status, canEdit, canApprove }: RdoActionButtonsProps) {
   const [loading, setLoading] = useState<string | null>(null);
-  const supabase = createClient();
-  const router = useRouter();
 
   const handlePrint = () => {
     window.print();
@@ -26,15 +24,8 @@ export function RdoActionButtons({ reportId, status, canEdit, canApprove }: RdoA
   const updateStatus = async (newStatus: ReportStatus, successMessage: string) => {
     setLoading(newStatus);
     try {
-      const { error } = await supabase
-        .from("daily_reports")
-        .update({ status: newStatus })
-        .eq("id", reportId);
-
-      if (error) throw error;
-      
+      await updateAllSectorsStatusAction(reportId, projectId, newStatus);
       toast.success(successMessage);
-      router.refresh();
     } catch (err: unknown) {
       console.error(err);
       const message = err instanceof Error ? err.message : "Erro ao atualizar status do relatório.";

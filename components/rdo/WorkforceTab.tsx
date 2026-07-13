@@ -19,7 +19,7 @@ interface WorkforceEntry {
   created_at?: string;
 }
 
-export function WorkforceTab({ reportId, companyId }: { reportId: string, companyId: string }) {
+export function WorkforceTab({ reportId, companyId, sector, canEdit = true }: { reportId: string, companyId: string, sector: string, canEdit?: boolean }) {
   const [entries, setEntries] = useState<WorkforceEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -32,6 +32,7 @@ export function WorkforceTab({ reportId, companyId }: { reportId: string, compan
         .from("workforce_entries")
         .select("*")
         .eq("daily_report_id", reportId)
+        .eq("sector", sector as any)
         .order("created_at", { ascending: true });
         
       if (error) throw error;
@@ -58,7 +59,7 @@ export function WorkforceTab({ reportId, companyId }: { reportId: string, compan
       quantity: 1,
       company_name: "",
       hours_worked: 8,
-      sector: "civil",
+      sector: sector as any,
       observations: "",
     };
     setEntries((prev) => [...prev, newRow]);

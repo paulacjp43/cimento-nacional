@@ -3,10 +3,9 @@
 import { useState, use } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Loader2, AlertCircle, Cloud, Thermometer, Calendar } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import Link from "next/link";
-import { DaySituation, WeatherCondition } from "@/types/database";
+import { createDailyReportAction } from "../actions";
 
 export default function NovoRdoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -23,62 +22,11 @@ export default function NovoRdoPage({ params }: { params: Promise<{ id: string }
     setError(null);
 
     const formData = new FormData(e.currentTarget);
-    const report_date = formData.get("report_date") as string;
-    const weather_morning = formData.get("weather_morning") as WeatherCondition;
-    const weather_afternoon = formData.get("weather_afternoon") as WeatherCondition;
-    const temperature = formData.get("temperature") ? parseInt(formData.get("temperature") as string, 10) : null;
-    const day_situation = formData.get("day_situation") as DaySituation;
-    const had_rain = formData.get("had_rain") === "on";
-
-    const supabase = createClient();
-
     try {
-      // 1. Get user profile for company_id
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Não autenticado");
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("company_id")
-        .eq("id", user.id)
-        .single();
-
-      if (!profile?.company_id) throw new Error("Empresa não encontrada");
-
-      // 2. Check if a report for this date already exists for this project
-      const { data: existing } = await supabase
-        .from("daily_reports")
-        .select("id")
-        .eq("project_id", id)
-        .eq("report_date", report_date)
-        .maybeSingle();
-
-      if (existing) {
-        throw new Error("Já existe um relatório criado para esta data.");
-      }
-
-      // 3. Create the report
-      const { data: newReport, error: insertError } = await supabase
-        .from("daily_reports")
-        .insert({
-          company_id: profile.company_id,
-          project_id: id,
-          report_date,
-          weather_morning,
-          weather_afternoon,
-          temperature,
-          day_situation,
-          had_rain,
-          created_by: user.id,
-          status: "draft"
-        })
-        .select("id")
-        .single();
-
-      if (insertError) throw insertError;
+      const newReportId = await createDailyReportAction(id, formData);
 
       toast.success("Cabeçalho do RDO criado! Agora preencha os detalhes.");
-      router.push(`/obras/${id}/relatorios/${newReport.id}`);
+      router.push(`/obras/${id}/relatorios/${newReportId}`);
       router.refresh();
       
     } catch (err: unknown) {

@@ -202,9 +202,7 @@ export function RdoPrintLayout({
         // Se o setor não tiver atividades e estiver vazio, podemos pular ou mostrar vazio. Vamos mostrar o cabeçalho no mínimo.
         if (!sectorActivities) return null;
 
-        // MODO OTIMIZADO: Esconder setores Não Se Aplica (vazios)
-        const isOptimizedHidden = sectorActivities.status === 'not_applicable';
-        if (isOptimizedHidden) return null;
+        const isOptimizedHidden = false; // sectorActivities.status === 'not_applicable';
 
         const secStatusLabel = REPORT_STATUS_LABELS[sectorActivities.status as keyof typeof REPORT_STATUS_LABELS] || "Pendente";
         

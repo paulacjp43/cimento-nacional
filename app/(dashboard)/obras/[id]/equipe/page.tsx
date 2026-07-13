@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Users, ArrowLeft, Shield, CheckCircle2, HardHat } from "lucide-react";
+import { Users, Shield } from "lucide-react";
 import type { Metadata } from "next";
 import { AddMemberForm } from "./AddMemberForm";
 import { RemoveMemberButton } from "./RemoveMemberButton";
@@ -65,7 +65,10 @@ export default async function ProjectTeamPage({ params }: { params: Promise<{ id
     .order("created_at", { ascending: true });
 
   const linkedMembers = (projectMembersData || []).filter(pm => pm.profiles != null);
-  const linkedUserIds = linkedMembers.map(pm => (pm.profiles as any).id);
+  const linkedUserIds = linkedMembers.map(pm => {
+    const p = Array.isArray(pm.profiles) ? pm.profiles[0] : pm.profiles;
+    return p?.id;
+  }).filter(Boolean);
 
   // Buscar todos os usuários da empresa que ainda não estão vinculados
   let availableUsers: any[] = [];
@@ -77,7 +80,14 @@ export default async function ProjectTeamPage({ params }: { params: Promise<{ id
     .order("full_name");
 
   if (allUsers) {
-    availableUsers = allUsers.filter(u => !linkedUserIds.includes(u.id));
+    availableUsers = allUsers
+      .filter(u => !linkedUserIds.includes(u.id))
+      .map(u => ({
+        id: u.id,
+        full_name: u.full_name || "",
+        email: u.email || "",
+        role: u.role || "member"
+      }));
   }
 
   return (
@@ -123,7 +133,8 @@ export default async function ProjectTeamPage({ params }: { params: Promise<{ id
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {linkedMembers.map((pm: any) => {
-                    const profile = pm.profiles;
+                    const profile = Array.isArray(pm.profiles) ? pm.profiles[0] : pm.profiles;
+                    if (!profile) return null;
                     return (
                       <tr key={pm.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
                         <td className="px-6 py-4">

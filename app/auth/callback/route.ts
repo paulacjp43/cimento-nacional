@@ -19,7 +19,7 @@ export async function GET(request: Request) {
   const redirectPath = allowedNextRoutes.includes(next) ? next : "/dashboard";
   
   if (code) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createServerClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
 
   // Se usar flow implicito com token_hash (ex: magic link) em vez de PKCE code
   if (token_hash && type) {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const supabase = createServerClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

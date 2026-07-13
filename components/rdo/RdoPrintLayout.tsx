@@ -22,6 +22,7 @@ interface RdoPrintLayoutProps {
   attachments: any[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   sectorMessages: any[];
+  singleSector?: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +61,8 @@ export function RdoPrintLayout({
   activities, 
   attachments,
   sectorMessages,
-  previewMode = false
+  previewMode = false,
+  singleSector
 }: RdoPrintLayoutProps & { previewMode?: boolean }) {
   // Format Date
   const dateParts = report.report_date.split('-');
@@ -79,11 +81,16 @@ export function RdoPrintLayout({
     { id: "safety", label: "Segurança do Trabalho" },
   ];
 
+  const filteredSectorsList = singleSector 
+    ? sectorsList.filter(s => s.id === singleSector)
+    : sectorsList;
+
   return (
     <div className={`${previewMode ? 'block py-8 bg-slate-100' : 'hidden print:block'} w-full text-black bg-white`}>
       
       {/* ─── PÁGINA DE RESUMO (CAPA) ─── */}
-      <div className="print-page border-2 border-slate-300 p-8 rounded-lg mb-6 min-h-[1050px] flex flex-col relative">
+      {!singleSector && (
+        <div className="print-page border-2 border-slate-300 p-8 rounded-lg mb-6 min-h-[1050px] flex flex-col relative">
         <div className="flex items-center justify-between gap-6 mb-8">
           <div className="flex items-center gap-4">
             <div className="w-24 h-24 bg-white overflow-hidden p-1 flex-shrink-0 flex items-center justify-center border-2 border-slate-200 rounded">
@@ -187,10 +194,10 @@ export function RdoPrintLayout({
             })}
           </div>
         </div>
-      </div>
+      )}
 
       {/* ─── PÁGINAS POR SETOR ─── */}
-      {sectorsList.map(sectorInfo => {
+      {filteredSectorsList.map(sectorInfo => {
         // Filter data for this sector
         const sectorActivities = activities.find(a => a.sector === sectorInfo.id);
         const sectorWorkforce = workforce.filter(w => w.sector === sectorInfo.id);

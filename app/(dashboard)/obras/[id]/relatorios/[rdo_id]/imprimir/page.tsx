@@ -10,8 +10,15 @@ export const metadata: Metadata = {
   title: "Visão Consolidada - RDO",
 };
 
-export default async function RdoPrintPage({ params }: { params: Promise<{ id: string; rdo_id: string }> }) {
+export default async function RdoPrintPage({ 
+  params,
+  searchParams,
+}: { 
+  params: Promise<{ id: string; rdo_id: string }>;
+  searchParams: Promise<{ sector?: string }>;
+}) {
   const { id, rdo_id } = await params;
+  const { sector } = await searchParams;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -160,6 +167,7 @@ export default async function RdoPrintPage({ params }: { params: Promise<{ id: s
           attachments={attachments}
           sectorMessages={sectorMessages || []}
           previewMode={true}
+          singleSector={sector}
         />
       </div>
     </div>

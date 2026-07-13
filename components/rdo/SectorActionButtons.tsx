@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CheckCircle, XCircle, Loader2, MinusCircle } from "lucide-react";
+import { CheckCircle, XCircle, Loader2, MinusCircle, Printer } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 import { updateSectorStatusAction } from "@/app/(dashboard)/obras/[id]/relatorios/actions";
@@ -35,10 +35,13 @@ export function SectorActionButtons({ reportId, projectId, sector, canApprove }:
     fetchStatus();
   }, [reportId, sector]);
 
-  if (!canApprove || isFetching) return null;
+  if (isFetching) return null;
 
-  // Mostra botões apenas se estiver em revisão, submetido, rascunho ou parcial
-  if (status === 'approved' || status === 'cancelled') return null;
+  const showApprovalButtons = canApprove && status !== 'approved' && status !== 'cancelled';
+
+  const handlePrintSector = () => {
+    window.open(`/obras/${projectId}/relatorios/${reportId}/imprimir?sector=${sector}`, '_blank');
+  };
 
   const updateStatus = async (newStatus: ReportStatus, successMessage: string) => {
     setLoading(newStatus);
@@ -58,32 +61,45 @@ export function SectorActionButtons({ reportId, projectId, sector, canApprove }:
   return (
     <div className="flex gap-2 print:hidden items-center">
       <button 
-        onClick={() => updateStatus("not_applicable", "Setor marcado como 'Não se Aplica'.")}
-        disabled={loading !== null}
-        className="btn btn-sm bg-gray-100 text-gray-600 hover:bg-gray-200 shadow-sm"
-        title="Dispensar Setor"
+        onClick={handlePrintSector}
+        className="btn btn-sm bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 shadow-sm"
+        title="Imprimir apenas este setor"
       >
-        {loading === "not_applicable" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <MinusCircle className="w-3 h-3 mr-1" />}
-        Dispensar
+        <Printer className="w-3 h-3 mr-1" />
+        Imprimir Setor
       </button>
-      
-      <button 
-        onClick={() => updateStatus("returned", "Setor devolvido.")}
-        disabled={loading !== null}
-        className="btn btn-sm bg-red-50 text-red-600 hover:bg-red-100 shadow-sm"
-      >
-        {loading === "returned" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <XCircle className="w-3 h-3 mr-1" />}
-        Devolver
-      </button>
-      
-      <button 
-        onClick={() => updateStatus("approved", "Setor aprovado!")}
-        disabled={loading !== null}
-        className="btn btn-sm bg-green-50 text-green-700 hover:bg-green-100 shadow-sm"
-      >
-        {loading === "approved" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <CheckCircle className="w-3 h-3 mr-1" />}
-        Aprovar Setor
-      </button>
+
+      {showApprovalButtons && (
+        <>
+          <button 
+            onClick={() => updateStatus("not_applicable", "Setor marcado como 'Não se Aplica'.")}
+            disabled={loading !== null}
+            className="btn btn-sm bg-gray-100 text-gray-600 hover:bg-gray-200 shadow-sm"
+            title="Dispensar Setor"
+          >
+            {loading === "not_applicable" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <MinusCircle className="w-3 h-3 mr-1" />}
+            Dispensar
+          </button>
+          
+          <button 
+            onClick={() => updateStatus("returned", "Setor devolvido.")}
+            disabled={loading !== null}
+            className="btn btn-sm bg-red-50 text-red-600 hover:bg-red-100 shadow-sm"
+          >
+            {loading === "returned" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <XCircle className="w-3 h-3 mr-1" />}
+            Devolver
+          </button>
+          
+          <button 
+            onClick={() => updateStatus("approved", "Setor aprovado!")}
+            disabled={loading !== null}
+            className="btn btn-sm bg-green-50 text-green-700 hover:bg-green-100 shadow-sm"
+          >
+            {loading === "approved" ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <CheckCircle className="w-3 h-3 mr-1" />}
+            Aprovar Setor
+          </button>
+        </>
+      )}
     </div>
   );
 }

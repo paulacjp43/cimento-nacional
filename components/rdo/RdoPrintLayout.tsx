@@ -194,6 +194,7 @@ export function RdoPrintLayout({
             })}
           </div>
         </div>
+      </div>
       )}
 
       {/* ─── PÁGINAS POR SETOR ─── */}
@@ -426,21 +427,43 @@ export function RdoPrintLayout({
             {/* ANEXOS */}
             {sectorAttachments.length > 0 && (
               <div className="card p-4 mb-4 border border-slate-200 rounded-lg" style={{ pageBreakInside: 'avoid' }}>
-                <h3 className="text-sm font-bold border-b border-slate-200 pb-1.5 mb-3 text-slate-800">Fotos do Setor</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  {sectorAttachments.map(att => (
-                    <div key={att.id} className="text-center">
-                      <div className="aspect-square relative rounded border border-slate-200 bg-slate-50 mb-1 flex items-center justify-center overflow-hidden">
-                        {att.url ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img src={att.url} alt={att.original_name} className="object-cover w-full h-full" />
-                        ) : (
-                          <span className="text-[10px] text-slate-400">Sem Imagem</span>
-                        )}
+                <h3 className="text-sm font-bold border-b border-slate-200 pb-1.5 mb-3 text-slate-800">Laudo Fotográfico - Setor {sectorInfo.label}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {sectorAttachments.map((att, index) => {
+                    const timeStr = att.created_at ? new Date(att.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '-';
+                    return (
+                      <div key={att.id} className="border border-slate-200 rounded-lg overflow-hidden flex flex-col bg-slate-50">
+                        <div className="aspect-[4/3] relative bg-slate-100 flex items-center justify-center overflow-hidden border-b border-slate-200">
+                          {att.url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={att.url} alt={att.caption || att.original_name} className="object-cover w-full h-full" />
+                          ) : (
+                            <span className="text-xs text-slate-400">Sem Imagem</span>
+                          )}
+                          <div className="absolute top-2 left-2 bg-black/70 text-white text-[9px] font-bold px-2 py-0.5 rounded">
+                            FOTO {(sectorAttachments.length - index).toString().padStart(2, '0')}
+                          </div>
+                        </div>
+                        <div className="p-3 text-[10px] space-y-1 bg-white flex-1">
+                          <div className="font-bold text-slate-900 border-b border-slate-100 pb-1 mb-1.5 leading-tight">
+                            {att.caption || <span className="text-slate-400 font-normal italic">Sem legenda</span>}
+                          </div>
+                          <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-slate-600">
+                            <div><strong>Local:</strong> {att.location_label || "—"}</div>
+                            <div><strong>Setor:</strong> {sectorInfo.label}</div>
+                            <div><strong>Horário:</strong> {timeStr}</div>
+                            <div><strong>Responsável:</strong> {att.profiles?.full_name?.split(' ')[0] || "—"}</div>
+                            <div className="col-span-2"><strong>Atividade:</strong> {att.description || "—"}</div>
+                            {att.latitude && att.longitude && (
+                              <div className="col-span-2 text-slate-500 font-mono text-[9px]">
+                                <strong>GPS:</strong> {Number(att.latitude).toFixed(5)}, {Number(att.longitude).toFixed(5)}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <span className="text-[9px] text-slate-500 truncate block w-full">{att.original_name}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}

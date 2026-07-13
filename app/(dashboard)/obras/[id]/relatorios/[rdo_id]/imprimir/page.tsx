@@ -115,7 +115,10 @@ export default async function RdoPrintPage({
 
   const { data: attachmentsData } = await supabase
     .from("attachments")
-    .select("*")
+    .select(`
+      *,
+      profiles!attachments_uploader_id_fkey(full_name)
+    `)
     .eq("daily_report_id", rdo_id)
     .order("created_at", { ascending: false });
 

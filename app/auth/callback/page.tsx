@@ -31,17 +31,26 @@ export default function AuthCallbackPage() {
             return;
           }
         } else {
-          // Fallback para hash fragment
-          // Dá um tempinho pro client processar o hash interno e salvar nos cookies
-          await new Promise(resolve => setTimeout(resolve, 1500));
-          
-          const { data, error: sessionError } = await supabase.auth.getSession();
-          if (sessionError) {
-            if (isMounted) setError(sessionError.message);
-            return;
+          // Fallback para Hash Fragment (Implicit Flow)
+          // Em redes lentas (3G/4G), o Supabase pode demorar para processar o hash.
+          // Faremos um polling com limite de 10 tentativas (5 segundos)
+          let session = null;
+          for (let i = 0; i < 10; i++) {
+            const { data, error: sessionError } = await supabase.auth.getSession();
+            if (sessionError) {
+              if (isMounted) setError(sessionError.message);
+              return;
+            }
+            if (data.session) {
+              session = data.session;
+              break;
+            }
+            // Aguarda 500ms antes de tentar novamente
+            await new Promise(resolve => setTimeout(resolve, 500));
           }
-          if (!data.session) {
-            if (isMounted) setError("Sessão não encontrada. O link pode ter sido usado ou expirado.");
+
+          if (!session) {
+            if (isMounted) setError("Link de convite inválido ou expirado. Solicite um novo convite ao administrador.");
             return;
           }
         }

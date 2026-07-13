@@ -62,15 +62,28 @@ export default function DefinirSenhaPage() {
       return;
     }
 
-    // Atualiza o status do convite (auditoria)
+    // Atualiza o status do convite (auditoria) e vincula o perfil à empresa
     if (user?.email) {
-      await supabase
+      const { data: inv, error: invError } = await supabase
         .from("invitations")
         .update({ 
           status: "accepted", 
           accepted_at: new Date().toISOString() 
         })
-        .eq("email", user.email);
+        .eq("email", user.email)
+        .select("company_id, role")
+        .single();
+
+      if (inv) {
+        // Atualiza o profile do usuário com a empresa e o nível de acesso corretos
+        await supabase
+          .from("profiles")
+          .update({
+            company_id: inv.company_id,
+            role: inv.role
+          })
+          .eq("id", user.id);
+      }
     }
 
     toast.success("Senha definida com sucesso!");

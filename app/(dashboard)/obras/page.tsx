@@ -41,30 +41,16 @@ export default async function ObrasPage() {
 
   const isAdmin = profile.role === "company_admin" || profile.role === "superadmin";
 
-  // Buscar obras
-  // Se for admin, vê todas. Se for membro, vê apenas as que está vinculado via project_members.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // Buscar obras - Todos da empresa podem ver todas as obras
   let projects: any[] = [];
-  
-  if (isAdmin) {
-    const { data } = await supabase
-      .from("projects")
-      .select("*")
-      .eq("company_id", profile.company_id)
-      .order("created_at", { ascending: false });
+  const { data } = await supabase
+    .from("projects")
+    .select("*")
+    .eq("company_id", profile.company_id)
+    .order("created_at", { ascending: false });
     
-    if (data) projects = data;
-  } else {
-    // Para usuários normais, precisa juntar com project_members
-    const { data } = await supabase
-      .from("project_members")
-      .select("projects(*)")
-      .eq("user_id", user.id);
-      
-    if (data) {
-      projects = data.map((m: unknown) => (m as { projects: unknown }).projects).filter(Boolean);
-    }
-  }
+  if (data) projects = data;
+
 
   return (
     <div className="fade-in space-y-6">

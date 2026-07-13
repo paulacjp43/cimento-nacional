@@ -50,19 +50,6 @@ export default async function ObraDetalhesPage({ params }: { params: Promise<{ i
     redirect("/obras");
   }
 
-  // Se não for admin, verificar se está vinculado à obra
-  if (!isAdmin) {
-    const { data: isMember } = await supabase
-      .from("project_members")
-      .select("id")
-      .eq("project_id", project.id)
-      .eq("user_id", user.id)
-      .single();
-      
-    if (!isMember) {
-      redirect("/acesso-negado");
-    }
-  }
 
   return (
     <div className="fade-in space-y-6">

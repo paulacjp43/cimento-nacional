@@ -196,7 +196,7 @@ export function RdoPrintLayout({
         const sectorEquipment = equipment.filter(e => e.sector === sectorInfo.id);
         const sectorMaterials = materials.filter(m => m.sector === sectorInfo.id);
         const sectorOccurrences = occurrences.filter(o => o.sector === sectorInfo.id);
-        const sectorAttachments = attachments.filter(a => a.daily_report_sector_id === sectorInfo.id);
+        const sectorAttachments = attachments.filter(a => a.sector === sectorInfo.id);
 
         // Se o setor não tiver atividades e estiver vazio, podemos pular ou mostrar vazio. Vamos mostrar o cabeçalho no mínimo.
         if (!sectorActivities) return null;
@@ -372,7 +372,7 @@ export function RdoPrintLayout({
       })}
 
       {/* ─── PÁGINA DE ANEXOS GERAIS (SE HOUVER) ─── */}
-      {attachments.filter(a => !['civil', 'eletrica', 'mecanica'].includes(a.daily_report_sector_id)).length > 0 && (
+      {attachments.filter(a => !['civil', 'eletrica', 'mecanica'].includes(a.sector)).length > 0 && (
         <div className="print-page w-full min-h-[1050px]" style={{ pageBreakBefore: 'always' }}>
            <div className="border border-slate-300 p-4 rounded-lg mb-6">
               <div className="flex justify-between items-center">
@@ -382,7 +382,7 @@ export function RdoPrintLayout({
               </div>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {attachments.filter(a => !['civil', 'eletrica', 'mecanica'].includes(a.daily_report_sector_id)).map(att => (
+              {attachments.filter(a => !['civil', 'eletrica', 'mecanica'].includes(a.sector)).map(att => (
                 <div key={att.id} className="text-center bg-white border border-slate-200 rounded-lg p-2 shadow-sm">
                   <div className="aspect-square relative rounded border border-slate-200 bg-slate-50 mb-2 flex items-center justify-center overflow-hidden">
                     {att.url ? (

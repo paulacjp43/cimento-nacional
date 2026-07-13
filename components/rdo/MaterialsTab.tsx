@@ -265,6 +265,7 @@ export function MaterialsTab({ reportId, companyId, sector, canEdit = true }: { 
                       <option value="civil">Civil</option>
                       <option value="eletrica">Elétrica</option>
                       <option value="mecanica">Mecânica</option>
+                      <option value="safety">Safety</option>
                     </select>
                   </td>
                   <td className="px-3 py-2 text-center">

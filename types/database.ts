@@ -303,15 +303,11 @@ export type Database = {
           executed_activities: string | null
           general_observations: string | null
           id: string
-          inspections_done: string | null
           next_day_forecast: string | null
-          pending_issues: string | null
-          planned_activities: string | null
-          problems_found: string | null
           sector: Database["public"]["Enums"]["sector_type"]
+          safety_metrics: Json | null
           status: Database["public"]["Enums"]["report_status"]
           team_description: string | null
-          tests_done: string | null
           updated_at: string
           updated_by: string | null
           work_front: string | null
@@ -325,15 +321,11 @@ export type Database = {
           executed_activities?: string | null
           general_observations?: string | null
           id?: string
-          inspections_done?: string | null
           next_day_forecast?: string | null
-          pending_issues?: string | null
-          planned_activities?: string | null
-          problems_found?: string | null
           sector: Database["public"]["Enums"]["sector_type"]
+          safety_metrics?: Json | null
           status?: Database["public"]["Enums"]["report_status"]
           team_description?: string | null
-          tests_done?: string | null
           updated_at?: string
           updated_by?: string | null
           work_front?: string | null
@@ -347,15 +339,11 @@ export type Database = {
           executed_activities?: string | null
           general_observations?: string | null
           id?: string
-          inspections_done?: string | null
           next_day_forecast?: string | null
-          pending_issues?: string | null
-          planned_activities?: string | null
-          problems_found?: string | null
           sector?: Database["public"]["Enums"]["sector_type"]
+          safety_metrics?: Json | null
           status?: Database["public"]["Enums"]["report_status"]
           team_description?: string | null
-          tests_done?: string | null
           updated_at?: string
           updated_by?: string | null
           work_front?: string | null
@@ -1354,7 +1342,7 @@ export type Database = {
         | "contract"
         | "other"
       occurrence_status: "open" | "in_treatment" | "resolved" | "cancelled"
-      project_role: "manager" | "civil" | "electrical" | "mechanical" | "viewer"
+      project_role: "manager" | "civil" | "electrical" | "mechanical" | "viewer" | "safety"
       project_status:
         | "planned"
         | "in_progress"
@@ -1369,6 +1357,9 @@ export type Database = {
         | "approved"
         | "returned"
         | "cancelled"
+        | "not_applicable"
+        | "partial_approval"
+        | "partial_returned"
       review_action:
         | "created"
         | "edited"
@@ -1378,7 +1369,7 @@ export type Database = {
         | "returned"
         | "reopened"
         | "cancelled"
-      sector_type: "civil" | "eletrica" | "mecanica"
+      sector_type: "civil" | "eletrica" | "mecanica" | "safety"
       severity_level: "low" | "medium" | "high" | "critical"
       user_role:
         | "superadmin"
@@ -1556,7 +1547,7 @@ export const Constants = {
         "other",
       ],
       occurrence_status: ["open", "in_treatment", "resolved", "cancelled"],
-      project_role: ["manager", "civil", "electrical", "mechanical", "viewer"],
+      project_role: ["manager", "civil", "electrical", "mechanical", "viewer", "safety"],
       project_status: [
         "planned",
         "in_progress",
@@ -1572,6 +1563,9 @@ export const Constants = {
         "approved",
         "returned",
         "cancelled",
+        "not_applicable",
+        "partial_approval",
+        "partial_returned",
       ],
       review_action: [
         "created",
@@ -1583,7 +1577,7 @@ export const Constants = {
         "reopened",
         "cancelled",
       ],
-      sector_type: ["civil", "eletrica", "mecanica"],
+      sector_type: ["civil", "eletrica", "mecanica", "safety"],
       severity_level: ["low", "medium", "high", "critical"],
       user_role: [
         "superadmin",

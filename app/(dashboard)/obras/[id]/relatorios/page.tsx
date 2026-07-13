@@ -17,6 +17,9 @@ const statusMap: Record<string, { label: string; icon: any; color: string }> = {
   approved: { label: "Aprovado", icon: CheckCircle2, color: "text-green-500 bg-green-100 dark:bg-green-900/30" },
   returned: { label: "Devolvido", icon: AlertCircle, color: "text-red-500 bg-red-100 dark:bg-red-900/30" },
   cancelled: { label: "Cancelado", icon: AlertCircle, color: "text-gray-400 bg-gray-50 dark:bg-gray-900/10" },
+  not_applicable: { label: "Não se Aplica", icon: CheckCircle2, color: "text-gray-500 bg-gray-200 dark:bg-gray-700" },
+  partial_approval: { label: "Aprovação Parcial", icon: CheckCircle2, color: "text-emerald-500 bg-emerald-100 dark:bg-emerald-900/30" },
+  partial_returned: { label: "Devolução Parcial", icon: AlertCircle, color: "text-rose-500 bg-rose-100 dark:bg-rose-900/30" },
 };
 
 const weatherMap: Record<string, string> = {

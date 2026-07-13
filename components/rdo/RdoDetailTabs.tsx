@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FileText, Users, HardHat, Package, CheckSquare, Image as ImageIcon, AlertTriangle, MessageSquare } from "lucide-react";
+import { FileText, Users, HardHat, Package, CheckSquare, Image as ImageIcon, AlertTriangle, MessageSquare, ShieldAlert } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { GeneralTab } from "./GeneralTab";
 import { CommunicationTab } from "./CommunicationTab";
 import { SectorTab } from "./SectorTab";
+import { SectorActionButtons } from "./SectorActionButtons";
 import { AttachmentsTab } from "./AttachmentsTab";
 
 import { useSearchParams } from "next/navigation";
@@ -54,9 +55,10 @@ export function RdoDetailTabs({ report, project, userRole, canEditGlobal = true 
 
   const tabs = [
     { id: "geral", label: "Dados Gerais", icon: FileText, show: true },
-    { id: "civil", label: "Civil", icon: HardHat, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'civil_responsible' },
-    { id: "eletrica", label: "Elétrica", icon: CheckSquare, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'electrical_responsible' },
-    { id: "mecanica", label: "Mecânica", icon: Package, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'mechanical_responsible' },
+    { id: "civil", label: "Civil", icon: HardHat, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'civil' || userRole === 'manager' || userRole === 'viewer' },
+    { id: "eletrica", label: "Elétrica", icon: CheckSquare, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'electrical' || userRole === 'manager' || userRole === 'viewer' },
+    { id: "mecanica", label: "Mecânica", icon: Package, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'mechanical' || userRole === 'manager' || userRole === 'viewer' },
+    { id: "safety", label: "Segurança", icon: ShieldAlert, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'safety' || userRole === 'manager' || userRole === 'viewer' },
     { id: "comunicacao", label: "Comunicação", icon: MessageSquare, show: true },
   ].filter(t => t.show);
 
@@ -123,22 +125,44 @@ export function RdoDetailTabs({ report, project, userRole, canEditGlobal = true 
 
         {activeTab === "civil" && (
           <div className="fade-in">
-            <h3 className="text-lg font-medium mb-4 pb-2 border-b dark:border-gray-800">Setor Civil</h3>
-            <SectorTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="civil" canEdit={canEditGlobal && (userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'civil_responsible')} />
+            <div className="flex justify-between items-center mb-4 pb-2 border-b dark:border-gray-800">
+              <h3 className="text-lg font-medium">Setor Civil</h3>
+              <SectorActionButtons reportId={report.id} projectId={project.id} sector="civil" canApprove={userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'civil'} />
+            </div>
+            <SectorTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="civil" canEdit={canEditGlobal && (userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'civil')} />
           </div>
         )}
 
         {activeTab === "eletrica" && (
           <div className="fade-in">
-            <h3 className="text-lg font-medium mb-4 pb-2 border-b dark:border-gray-800">Setor Elétrica</h3>
-            <SectorTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="eletrica" canEdit={canEditGlobal && (userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'electrical_responsible')} />
+            <div className="flex justify-between items-center mb-4 pb-2 border-b dark:border-gray-800">
+              <h3 className="text-lg font-medium">Setor Elétrica</h3>
+              <SectorActionButtons reportId={report.id} projectId={project.id} sector="eletrica" canApprove={userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'electrical'} />
+            </div>
+            <SectorTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="eletrica" canEdit={canEditGlobal && (userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'electrical')} />
           </div>
         )}
 
         {activeTab === "mecanica" && (
           <div className="fade-in">
-            <h3 className="text-lg font-medium mb-4 pb-2 border-b dark:border-gray-800">Setor Mecânica</h3>
-            <SectorTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="mecanica" canEdit={canEditGlobal && (userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'mechanical_responsible')} />
+            <div className="flex justify-between items-center mb-4 pb-2 border-b dark:border-gray-800">
+              <h3 className="text-lg font-medium">Setor Mecânica</h3>
+              <SectorActionButtons reportId={report.id} projectId={project.id} sector="mecanica" canApprove={userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'mechanical'} />
+            </div>
+            <SectorTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="mecanica" canEdit={canEditGlobal && (userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'mechanical')} />
+          </div>
+        )}
+
+        {activeTab === "safety" && (
+          <div className="fade-in">
+            <div className="flex justify-between items-center mb-4 pb-2 border-b dark:border-gray-800">
+              <h3 className="text-lg font-medium flex items-center gap-2">
+                <ShieldAlert className="w-5 h-5 text-red-500" />
+                Segurança do Trabalho
+              </h3>
+              <SectorActionButtons reportId={report.id} projectId={project.id} sector="safety" canApprove={userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'safety'} />
+            </div>
+            <SectorTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="safety" canEdit={canEditGlobal && (userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'safety')} />
           </div>
         )}
 

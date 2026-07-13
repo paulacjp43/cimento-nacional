@@ -83,6 +83,7 @@ export function RdoPrintLayout({
     { id: "civil", label: "Civil" },
     { id: "eletrica", label: "Elétrica" },
     { id: "mecanica", label: "Mecânica" },
+    { id: "safety", label: "Segurança do Trabalho" },
   ];
 
   return (
@@ -106,6 +107,7 @@ export function RdoPrintLayout({
               STATUS CONSOLIDADO: {statusLabel.toUpperCase()}
             </div>
             <p className="text-sm text-slate-500 mt-1">RDO Nº: {String(report.report_number || report.id).substring(0,8).padStart(5, '0')}</p>
+            <p className="text-[10px] text-slate-400 mt-0.5">CÓD. VERIFICAÇÃO: {report.id.substring(0, 13).toUpperCase()}</p>
           </div>
         </div>
         
@@ -207,7 +209,14 @@ export function RdoPrintLayout({
         // Se o setor não tiver atividades e estiver vazio, podemos pular ou mostrar vazio. Vamos mostrar o cabeçalho no mínimo.
         if (!sectorActivities) return null;
 
+        // MODO OTIMIZADO: Esconder setores Rascunho ou Não Se Aplica (vazios)
+        const isOptimizedHidden = sectorActivities.status === 'draft' || sectorActivities.status === 'not_applicable';
+        if (isOptimizedHidden) return null;
+
         const secStatusLabel = statusLabelMap[sectorActivities.status] || "Pendente";
+        
+        // Extrai as métricas de segurança (se for o setor safety)
+        const safetyMetrics = sectorActivities.safety_metrics as any || {};
 
         return (
           <div key={sectorInfo.id} className="print-page w-full min-h-[1050px]" style={{ pageBreakBefore: 'always' }}>
@@ -222,26 +231,91 @@ export function RdoPrintLayout({
               </div>
             </div>
 
-            {/* ATIVIDADES */}
-            <div className="card p-4 mb-4 border border-slate-200 rounded-lg">
-              <h3 className="text-sm font-bold border-b border-slate-200 pb-1.5 mb-3 text-slate-800">Atividades</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                <div>
-                  <span className="font-bold text-slate-700 block border-b border-slate-100 pb-1 mb-1">Executadas (Hoje):</span>
-                  <p className="text-slate-600 whitespace-pre-line">{sectorActivities.executed_activities || "Nenhuma atividade declarada."}</p>
+            {/* DADOS DE SEGURANÇA (Apenas para o setor safety) */}
+            {sectorInfo.id === "safety" && (
+              <div className="card p-4 mb-4 border border-slate-200 rounded-lg">
+                <h3 className="text-sm font-bold border-b border-slate-200 pb-1.5 mb-3 text-slate-800">Controle de Segurança (SST)</h3>
+                <div className="grid grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <span className="font-bold text-slate-700 block border-b border-slate-100 pb-1 mb-1">DDS (Diálogo Diário de Segurança):</span>
+                    {safetyMetrics.dds_realizado ? (
+                      <div>
+                        <p><strong>Realizado:</strong> Sim</p>
+                        <p><strong>Tema:</strong> {safetyMetrics.dds_tema || "-"}</p>
+                        <p><strong>Responsável:</strong> {safetyMetrics.dds_responsavel || "-"}</p>
+                        <p><strong>Participantes:</strong> {safetyMetrics.dds_participantes || "0"}</p>
+                      </div>
+                    ) : (
+                      <p className="text-red-600">Não Realizado</p>
+                    )}
+                  </div>
+                  <div>
+                    <span className="font-bold text-slate-700 block border-b border-slate-100 pb-1 mb-1">Rotinas / Liberações:</span>
+                    <p><strong>Inspeções:</strong> {safetyMetrics.inspecoes_realizadas ? "Sim" : "Não"}</p>
+                    <p><strong>Permissão Trab. (PT):</strong> {safetyMetrics.permissao_trabalho ? "Sim" : "Não"}</p>
+                    <p><strong>Uso EPI:</strong> {safetyMetrics.uso_epi ? "Ok" : "Falta"}</p>
+                    <p><strong>Uso EPC:</strong> {safetyMetrics.uso_epc ? "Ok" : "Falta"}</p>
+                  </div>
                 </div>
-                <div>
-                  <span className="font-bold text-slate-700 block border-b border-slate-100 pb-1 mb-1">Previsão (Amanhã):</span>
-                  <p className="text-slate-600 whitespace-pre-line">{sectorActivities.next_day_forecast || "Nenhuma previsão declarada."}</p>
+                
+                <div className="mt-4 border-t border-slate-100 pt-3">
+                  <span className="font-bold text-slate-700 block mb-2">Trabalhos Especiais Realizados:</span>
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    {safetyMetrics.trabalho_altura && <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded">Altura</span>}
+                    {safetyMetrics.trabalho_confinado && <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded">Espaço Confinado</span>}
+                    {safetyMetrics.trabalho_quente && <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded">Trabalho a Quente</span>}
+                    {safetyMetrics.interdicao_area && <span className="bg-amber-100 text-amber-800 px-2 py-1 rounded">Interdição de Área</span>}
+                    {!safetyMetrics.trabalho_altura && !safetyMetrics.trabalho_confinado && !safetyMetrics.trabalho_quente && !safetyMetrics.interdicao_area && <span className="text-slate-500 italic">Nenhum</span>}
+                  </div>
+                </div>
+
+                <div className="mt-4 border-t border-slate-100 pt-3">
+                  <span className="font-bold text-slate-700 block mb-2 text-red-600">Ocorrências Críticas Registradas:</span>
+                  <div className="flex flex-wrap gap-2 text-xs mb-3">
+                    {safetyMetrics.nao_conformidades && <span className="bg-red-100 text-red-800 px-2 py-1 rounded font-bold">Não Conformidade</span>}
+                    {safetyMetrics.atos_inseguros && <span className="bg-red-100 text-red-800 px-2 py-1 rounded font-bold">Ato Inseguro</span>}
+                    {safetyMetrics.condicoes_inseguras && <span className="bg-red-100 text-red-800 px-2 py-1 rounded font-bold">Condição Insegura</span>}
+                    {safetyMetrics.incidentes && <span className="bg-red-100 text-red-800 px-2 py-1 rounded font-bold">Incidente</span>}
+                    {safetyMetrics.quase_acidentes && <span className="bg-red-100 text-red-800 px-2 py-1 rounded font-bold">Quase Acidente</span>}
+                    {safetyMetrics.acidentes && <span className="bg-red-600 text-white px-2 py-1 rounded font-bold">ACIDENTE</span>}
+                    {safetyMetrics.primeiros_socorros && <span className="bg-red-100 text-red-800 px-2 py-1 rounded font-bold">Primeiros Socorros</span>}
+                    {!safetyMetrics.nao_conformidades && !safetyMetrics.atos_inseguros && !safetyMetrics.condicoes_inseguras && !safetyMetrics.incidentes && !safetyMetrics.quase_acidentes && !safetyMetrics.acidentes && !safetyMetrics.primeiros_socorros && <span className="text-slate-500 italic text-green-600">Nenhuma ocorrência registrada.</span>}
+                  </div>
+                  
+                  {(safetyMetrics.nao_conformidades || safetyMetrics.atos_inseguros || safetyMetrics.condicoes_inseguras || safetyMetrics.incidentes || safetyMetrics.quase_acidentes || safetyMetrics.acidentes || safetyMetrics.primeiros_socorros) && (
+                    <div className="bg-red-50 p-2 rounded text-[10px] space-y-1 mt-2">
+                      <p><strong>Situação:</strong> {safetyMetrics.situacao_ocorrencia || "-"}</p>
+                      <p><strong>Medidas Corretivas (Imediata):</strong> {safetyMetrics.medidas_corretivas || "-"}</p>
+                      <p><strong>Pendências (Futuras):</strong> {safetyMetrics.pendencias_seguranca || "-"}</p>
+                      <p><strong>Responsável Correção:</strong> {safetyMetrics.responsavel_correcao || "-"} | <strong>Prazo:</strong> {safetyMetrics.prazo_correcao || "-"}</p>
+                    </div>
+                  )}
                 </div>
               </div>
-              {sectorActivities.general_observations && (
-                <div className="mt-4 text-xs bg-slate-50 p-2 rounded border border-slate-200">
-                  <span className="font-bold text-slate-700 block mb-1">Observações:</span>
-                  <p className="text-slate-600 whitespace-pre-line">{sectorActivities.general_observations}</p>
+            )}
+
+            {/* ATIVIDADES (Apenas para setores normais) */}
+            {sectorInfo.id !== "safety" && (
+              <div className="card p-4 mb-4 border border-slate-200 rounded-lg">
+                <h3 className="text-sm font-bold border-b border-slate-200 pb-1.5 mb-3 text-slate-800">Atividades</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                  <div>
+                    <span className="font-bold text-slate-700 block border-b border-slate-100 pb-1 mb-1">Executadas (Hoje):</span>
+                    <p className="text-slate-600 whitespace-pre-line">{sectorActivities.executed_activities || "Nenhuma atividade declarada."}</p>
+                  </div>
+                  <div>
+                    <span className="font-bold text-slate-700 block border-b border-slate-100 pb-1 mb-1">Previsão (Amanhã):</span>
+                    <p className="text-slate-600 whitespace-pre-line">{sectorActivities.next_day_forecast || "Nenhuma previsão declarada."}</p>
+                  </div>
                 </div>
-              )}
-            </div>
+                {sectorActivities.general_observations && (
+                  <div className="mt-4 text-xs bg-slate-50 p-2 rounded border border-slate-200">
+                    <span className="font-bold text-slate-700 block mb-1">Observações:</span>
+                    <p className="text-slate-600 whitespace-pre-line">{sectorActivities.general_observations}</p>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* EFETIVO */}
             <div className="card p-4 mb-4 border border-slate-200 rounded-lg">

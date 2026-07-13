@@ -5,7 +5,7 @@ import { Plus, Trash2, Loader2, AlertTriangle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
 
-export function OccurrencesTab({ reportId, companyId, projectId, sector, canEdit = true }: { reportId: string, companyId: string, projectId: string, sector: string, canEdit?: boolean }) {
+export function OccurrencesTab({ reportId, companyId, projectId, sector, canEdit = true }: { reportId: string, companyId: string, projectId: string, sector: "civil" | "eletrica" | "mecanica" | "safety" | null; canEdit?: boolean }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [entries, setEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

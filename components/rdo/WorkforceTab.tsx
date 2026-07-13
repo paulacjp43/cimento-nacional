@@ -12,7 +12,7 @@ interface WorkforceEntry {
   quantity: number | string;
   company_name: string | null;
   hours_worked: number | string | null;
-  sector: "civil" | "eletrica" | "mecanica" | null;
+  sector: "civil" | "eletrica" | "mecanica" | "safety" | null;
   observations: string | null;
   daily_report_id?: string;
   company_id?: string;

@@ -15,6 +15,7 @@ interface Attachment {
   file_size_bytes: number;
   storage_path: string;
   url: string | null;
+  sector: "civil" | "eletrica" | "mecanica" | "safety" | null;
 }
 
 export function AttachmentsTab({ reportId, companyId, projectId, sector, canEdit = true }: { reportId: string, companyId: string, projectId: string, sector: string, canEdit?: boolean }) {

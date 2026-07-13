@@ -17,6 +17,7 @@ export const PROJECT_ROLE_LABELS: Record<ProjectRole, string> = {
   civil: "Civil",
   electrical: "Elétrica",
   mechanical: "Mecânica",
+  safety: "Segurança",
   viewer: "Visualizador",
 };
 
@@ -27,6 +28,9 @@ export const REPORT_STATUS_LABELS: Record<ReportStatus, string> = {
   approved: "Aprovado",
   returned: "Devolvido",
   cancelled: "Cancelado",
+  not_applicable: "Não se Aplica",
+  partial_approval: "Aprovação Parcial",
+  partial_returned: "Devolução Parcial",
 };
 
 export const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
@@ -81,6 +85,7 @@ export const SECTOR_LABELS = {
   civil: "Civil",
   eletrica: "Elétrica",
   mecanica: "Mecânica",
+  safety: "Segurança do Trabalho",
 } as const;
 
 // ─── Cores de status para badges ─────────────────────────────────
@@ -92,6 +97,9 @@ export const REPORT_STATUS_COLORS: Record<ReportStatus, string> = {
   approved: "bg-green-100 text-green-700 border-green-200",
   returned: "bg-amber-100 text-amber-700 border-amber-200",
   cancelled: "bg-red-100 text-red-700 border-red-200",
+  not_applicable: "bg-gray-200 text-gray-700 border-gray-300",
+  partial_approval: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  partial_returned: "bg-rose-100 text-rose-700 border-rose-200",
 };
 
 export const PROJECT_STATUS_COLORS: Record<ProjectStatus, string> = {

@@ -20,6 +20,9 @@ const statusMap: Record<string, { label: string; color: string }> = {
   approved: { label: "Aprovado", color: "text-green-500 bg-green-100 dark:bg-green-900/30" },
   returned: { label: "Devolvido", color: "text-red-500 bg-red-100 dark:bg-red-900/30" },
   cancelled: { label: "Cancelado", color: "text-gray-400 bg-gray-50 dark:bg-gray-900/10" },
+  not_applicable: { label: "Não se Aplica", color: "text-gray-500 bg-gray-200 dark:bg-gray-700" },
+  partial_approval: { label: "Aprovação Parcial", color: "text-emerald-500 bg-emerald-100 dark:bg-emerald-900/30" },
+  partial_returned: { label: "Devolução Parcial", color: "text-rose-500 bg-rose-100 dark:bg-rose-900/30" },
 };
 
 export default async function RdoDetailPage({ params }: { params: Promise<{ id: string; rdo_id: string }> }) {
@@ -66,10 +69,12 @@ export default async function RdoDetailPage({ params }: { params: Promise<{ id: 
   let canEdit = isAdmin;
   let canApprove = isAdmin;
 
+  let memberRole: string = profile.role; // Default to profile role
+
   if (!isAdmin) {
     const { data: isMember } = await supabase
       .from("project_members")
-      .select("can_edit, can_approve")
+      .select("can_edit, can_approve, role")
       .eq("project_id", project.id)
       .eq("user_id", user.id)
       .single();
@@ -77,6 +82,9 @@ export default async function RdoDetailPage({ params }: { params: Promise<{ id: 
     if (!isMember) redirect("/acesso-negado");
     canEdit = isMember.can_edit;
     canApprove = isMember.can_approve;
+    if (isMember.role) {
+      memberRole = isMember.role; // Override with project specific role
+    }
   }
 
   // Format date
@@ -194,7 +202,7 @@ export default async function RdoDetailPage({ params }: { params: Promise<{ id: 
       {/* Tabs Layout (Escondido na impressão) */}
       <div className="print:hidden">
         <Suspense fallback={<div className="py-10 text-center text-xs text-gray-500">Carregando abas...</div>}>
-          <RdoDetailTabs report={report} project={project} userRole={profile.role} canEditGlobal={canEdit} />
+          <RdoDetailTabs report={report} project={project} userRole={memberRole} canEditGlobal={canEdit} />
         </Suspense>
       </div>
 

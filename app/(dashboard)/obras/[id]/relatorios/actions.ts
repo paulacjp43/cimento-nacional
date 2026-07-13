@@ -57,8 +57,8 @@ export async function createDailyReportAction(projectId: string, formData: FormD
 
   if (insertError) throw insertError;
 
-  // Now create the 3 sectors automatically
-  const sectors = ["civil", "eletrica", "mecanica"];
+  // Now create the 4 sectors automatically
+  const sectors = ["civil", "eletrica", "mecanica", "safety"];
   
   for (const sector of sectors) {
     await supabase.from("daily_report_sectors").insert({

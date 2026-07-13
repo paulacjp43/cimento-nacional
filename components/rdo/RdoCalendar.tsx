@@ -36,6 +36,9 @@ const statusMap: Record<string, { label: string; color: string }> = {
   approved: { label: "Aprovado", color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300 border-green-200 dark:border-green-800" },
   returned: { label: "Devolvido", color: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300 border-red-200 dark:border-red-800" },
   cancelled: { label: "Cancelado", color: "bg-gray-50 text-gray-500 dark:bg-gray-900/10 dark:text-gray-500 border-gray-200 dark:border-gray-800" },
+  not_applicable: { label: "Não se Aplica", color: "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300 border-gray-300 dark:border-gray-600" },
+  partial_approval: { label: "Aprovação Parcial", color: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800" },
+  partial_returned: { label: "Devolução Parcial", color: "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-300 border-rose-200 dark:border-rose-800" },
 };
 
 export function RdoCalendar({ projectId, rdos }: RdoCalendarProps) {

@@ -18,11 +18,17 @@ export function RemoveMemberButton({ projectId, memberId, memberName }: RemoveMe
   const handleRemove = async () => {
     setLoading(true);
     try {
-      await removeProjectMemberAction(projectId, memberId);
-      toast.success(`${memberName} foi desvinculado da obra.`);
+      const result = await removeProjectMemberAction(projectId, memberId);
+      
+      if (result && !result.success) {
+        toast.error(result.error || "Erro ao desvincular membro.");
+      } else {
+        toast.success(`${memberName} foi desvinculado da obra.`);
+      }
     } catch (err: Error | unknown) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Erro ao desvincular membro.");
+      toast.error(err instanceof Error ? err.message : "Erro inesperado ao desvincular membro.");
+    } finally {
       setLoading(false);
       setShowConfirm(false);
     }

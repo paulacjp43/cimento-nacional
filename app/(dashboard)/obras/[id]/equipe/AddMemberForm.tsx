@@ -40,12 +40,17 @@ export function AddMemberForm({ projectId, availableUsers }: AddMemberFormProps)
     }
 
     try {
-      await addProjectMemberAction(projectId, userId, role, sector);
-      toast.success("Membro vinculado com sucesso!");
-      (e.target as HTMLFormElement).reset();
+      const result = await addProjectMemberAction(projectId, userId, role, sector);
+      
+      if (result && !result.success) {
+        toast.error(result.error || "Erro ao vincular membro.");
+      } else {
+        toast.success("Membro vinculado com sucesso!");
+        (e.target as HTMLFormElement).reset();
+      }
     } catch (err: Error | unknown) {
       console.error(err);
-      toast.error(err instanceof Error ? err.message : "Erro ao vincular membro.");
+      toast.error(err instanceof Error ? err.message : "Erro inesperado ao vincular membro.");
     } finally {
       setLoading(false);
     }

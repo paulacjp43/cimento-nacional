@@ -18,7 +18,7 @@ export function RdoActionButtons({ reportId, projectId, status, canEdit, canAppr
   const [loading, setLoading] = useState<string | null>(null);
 
   const handlePrint = () => {
-    window.print();
+    window.open(`/obras/${projectId}/relatorios/${reportId}/imprimir`, '_blank');
   };
 
   const updateStatus = async (newStatus: ReportStatus, successMessage: string) => {

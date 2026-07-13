@@ -1,28 +1,16 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { DeleteReportButton } from "../DeleteReportButton";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Printer } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { RdoDetailTabs } from "@/components/rdo/RdoDetailTabs";
-import { RdoActionButtons } from "@/components/rdo/RdoActionButtons";
-import { ReportStatus } from "@/types/database";
-import { Suspense } from "react";
+import { RdoPrintLayout } from "@/components/rdo/RdoPrintLayout";
+import { PrintButton } from "@/components/rdo/PrintButton";
 
 export const metadata: Metadata = {
-  title: "Detalhes do Relatório",
+  title: "Visão Consolidada - RDO",
 };
 
-const statusMap: Record<string, { label: string; color: string }> = {
-  draft: { label: "Rascunho", color: "text-gray-500 bg-gray-100 dark:bg-gray-800" },
-  submitted: { label: "Enviado", color: "text-blue-500 bg-blue-100 dark:bg-blue-900/30" },
-  under_review: { label: "Em Revisão", color: "text-amber-500 bg-amber-100 dark:bg-amber-900/30" },
-  approved: { label: "Aprovado", color: "text-green-500 bg-green-100 dark:bg-green-900/30" },
-  returned: { label: "Devolvido", color: "text-red-500 bg-red-100 dark:bg-red-900/30" },
-  cancelled: { label: "Cancelado", color: "text-gray-400 bg-gray-50 dark:bg-gray-900/10" },
-};
-
-export default async function RdoDetailPage({ params }: { params: Promise<{ id: string; rdo_id: string }> }) {
+export default async function RdoPrintPage({ params }: { params: Promise<{ id: string; rdo_id: string }> }) {
   const { id, rdo_id } = await params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -61,11 +49,9 @@ export default async function RdoDetailPage({ params }: { params: Promise<{ id: 
     redirect(`/obras/${id}/relatorios`);
   }
 
-  // Verifica permissão
+  // Verifica permissão para a visão consolidada
   const isAdmin = profile.role === "company_admin" || profile.role === "superadmin";
-  let canEdit = isAdmin;
-  let canApprove = isAdmin;
-
+  
   if (!isAdmin) {
     const { data: isMember } = await supabase
       .from("project_members")
@@ -74,18 +60,10 @@ export default async function RdoDetailPage({ params }: { params: Promise<{ id: 
       .eq("user_id", user.id)
       .single();
       
+    // Se não for admin e não for gestor/aprovador, não pode ver o consolidado completo?
+    // Podemos permitir leitura se ele tiver acesso a alguma coisa, mas para manter simples:
     if (!isMember) redirect("/acesso-negado");
-    canEdit = isMember.can_edit;
-    canApprove = isMember.can_approve;
   }
-
-  // Format date
-  const dateParts = report.report_date.split('-');
-  const formattedDate = dateParts.length === 3 
-    ? `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}` 
-    : report.report_date;
-
-  const statusInfo = statusMap[report.status] || statusMap.draft;
 
   // Server-side fetch all RDO related data to ensure instant rendering in PDF printout
   const { data: workforce } = await supabase
@@ -121,6 +99,7 @@ export default async function RdoDetailPage({ params }: { params: Promise<{ id: 
     const existing = (activitiesData || []).find(d => d.sector === s);
     return existing || {
       sector: s,
+      status: "draft",
       executed_activities: "",
       next_day_forecast: "",
       general_observations: "",
@@ -153,51 +132,43 @@ export default async function RdoDetailPage({ params }: { params: Promise<{ id: 
     .order("created_at", { ascending: true });
 
   return (
-    <div className="fade-in space-y-6">
-      <div className="flex items-center justify-between mb-2 print:hidden">
+    <div className="bg-slate-100 min-h-screen pb-12">
+      {/* Barra de controle */}
+      <div className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10 print:hidden shadow-sm">
         <Link 
-          href={`/obras/${id}/relatorios`}
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-primary-600 transition-colors"
+          href={`/obras/${id}/relatorios/${rdo_id}`}
+          className="inline-flex items-center text-sm font-medium text-slate-600 hover:text-primary-600 transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 mr-1" /> Voltar para Lista de RDOs
+          <ArrowLeft className="w-4 h-4 mr-2" /> Voltar para o RDO
         </Link>
-      </div>
-
-      <div className="page-header flex flex-col md:flex-row justify-between items-start md:items-center gap-4 print:hidden">
-        <div>
-          <div className="flex items-center gap-3 mb-1">
-            <h1 className="page-title">
-              RDO: {formattedDate}
-            </h1>
-            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${statusInfo.color}`}>
-              {statusInfo.label}
-            </span>
-          </div>
-          <p className="page-subtitle">
-            Obra: {project.name} | Criado por: {report.profiles?.full_name || "Sistema"}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          {canEdit && (
-            <DeleteReportButton reportId={report.id} projectId={project.id} />
-          )}
-          <RdoActionButtons 
-            reportId={report.id} 
-            projectId={project.id}
-            status={report.status as ReportStatus} 
-            canEdit={canEdit} 
-            canApprove={canApprove} 
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-slate-500 hidden md:inline-block">Visão Consolidada (Preview de Impressão)</span>
+          <button 
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            onClick={() => {}} 
+            // Tive que colocar um botão interativo como cliente, vou transformar a page em client ou injetar um client component.
+            // Para resolver rapidamente:
+            className="hidden" // Will add client component for print button
           />
+          {/* Client component wrapper for print */}
+          <PrintButton />
         </div>
       </div>
 
-      {/* Tabs Layout (Escondido na impressão) */}
-      <div className="print:hidden">
-        <Suspense fallback={<div className="py-10 text-center text-xs text-gray-500">Carregando abas...</div>}>
-          <RdoDetailTabs report={report} project={project} userRole={profile.role} canEditGlobal={canEdit} />
-        </Suspense>
+      <div className="max-w-[21cm] mx-auto mt-8 shadow-xl">
+        <RdoPrintLayout 
+          report={report} 
+          project={project} 
+          workforce={workforce || []}
+          equipment={equipment || []}
+          materials={materials || []}
+          occurrences={occurrences || []}
+          activities={activities}
+          attachments={attachments}
+          sectorMessages={sectorMessages || []}
+          previewMode={true}
+        />
       </div>
-
     </div>
   );
 }

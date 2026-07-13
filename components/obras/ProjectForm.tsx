@@ -34,6 +34,7 @@ export function ProjectForm({ initialData, companyId }: ProjectFormProps) {
       city: formData.get("city") as string || null,
       state: formData.get("state") as string || null,
       status: formData.get("status") as ProjectStatus,
+      completion_pct: formData.get("completion_pct") ? parseInt(formData.get("completion_pct") as string) : 0,
       description: formData.get("description") as string || null,
       company_id: companyId,
     };
@@ -142,6 +143,21 @@ export function ProjectForm({ initialData, companyId }: ProjectFormProps) {
               defaultValue={initialData?.client}
               className="input"
               placeholder="Nome do cliente"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Progresso Físico (%)
+            </label>
+            <input
+              name="completion_pct"
+              type="number"
+              min="0"
+              max="100"
+              defaultValue={initialData?.completion_pct || 0}
+              className="input"
+              placeholder="Ex: 45"
             />
           </div>
 

@@ -58,7 +58,6 @@ export function RdoDetailTabs({ report, project, userRole, canEditGlobal = true 
     { id: "eletrica", label: "Elétrica", icon: CheckSquare, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'electrical_responsible' },
     { id: "mecanica", label: "Mecânica", icon: Package, show: userRole === 'superadmin' || userRole === 'company_admin' || userRole === 'mechanical_responsible' },
     { id: "comunicacao", label: "Comunicação", icon: MessageSquare, show: true },
-    { id: "fotos", label: "Fotos Gerais", icon: ImageIcon, show: true }, // We might keep a general photos tab if needed, or remove it. Let's keep it for now.
   ].filter(t => t.show);
 
   return (
@@ -149,13 +148,6 @@ export function RdoDetailTabs({ report, project, userRole, canEditGlobal = true 
           </div>
         )}
 
-        {activeTab === "fotos" && (
-          <div className="card p-6 fade-in">
-            <h3 className="text-lg font-medium mb-4 pb-2 border-b dark:border-gray-800">Fotos Gerais da Obra</h3>
-            {/* Sector 'geral' or empty, but let's use 'geral' for general photos */}
-            <AttachmentsTab reportId={report.id} companyId={report.company_id} projectId={project.id} sector="geral" canEdit={canEditGlobal} />
-          </div>
-        )}
       </div>
     </div>
   );

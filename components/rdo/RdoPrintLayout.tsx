@@ -376,35 +376,6 @@ export function RdoPrintLayout({
           </div>
         );
       })}
-
-      {/* ─── PÁGINA DE ANEXOS GERAIS (SE HOUVER) ─── */}
-      {attachments.filter(a => !['civil', 'eletrica', 'mecanica'].includes(a.sector)).length > 0 && (
-        <div className="print-page w-full min-h-[1050px]" style={{ pageBreakBefore: 'always' }}>
-           <div className="border border-slate-300 p-4 rounded-lg mb-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-xl font-bold uppercase tracking-widest text-slate-800">
-                  FOTOS GERAIS DA OBRA
-                </h2>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {attachments.filter(a => !['civil', 'eletrica', 'mecanica'].includes(a.sector)).map(att => (
-                <div key={att.id} className="text-center bg-white border border-slate-200 rounded-lg p-2 shadow-sm">
-                  <div className="aspect-square relative rounded border border-slate-200 bg-slate-50 mb-2 flex items-center justify-center overflow-hidden">
-                    {att.url ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={att.url} alt={att.original_name} className="object-cover w-full h-full" />
-                    ) : (
-                      <span className="text-xs text-slate-400">Sem Imagem</span>
-                    )}
-                  </div>
-                  <span className="text-xs text-slate-600 font-medium truncate block w-full px-1">{att.original_name}</span>
-                </div>
-              ))}
-            </div>
-        </div>
-      )}
-
       {/* Estilos Específicos para Impressão */}
       <style dangerouslySetInnerHTML={{__html: `
         @media print {

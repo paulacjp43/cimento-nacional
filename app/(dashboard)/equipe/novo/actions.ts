@@ -29,6 +29,11 @@ export async function createInvitation(formData: FormData) {
 
   const supabaseAdmin = createAdminClient();
 
+  const { headers } = await import("next/headers");
+  const host = headers().get("host") || "localhost:3000";
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const origin = `${protocol}://${host}`;
+
   // Enviar convite via Auth Admin
   const { data: inviteData, error: inviteError } = await supabaseAdmin.auth.admin.inviteUserByEmail(
     email.toLowerCase(),
@@ -38,7 +43,7 @@ export async function createInvitation(formData: FormData) {
         company_id: profile.company_id,
       },
       // Configurar o redirecionamento para a tela de definição de senha
-      redirectTo: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/definir-senha`
+      redirectTo: `${origin}/definir-senha`
     }
   );
 

@@ -45,7 +45,7 @@ export async function createInvitation(formData: FormData) {
         company_id: profile.company_id,
       },
       // Configurar o redirecionamento para o callback correto do fluxo SSR (PKCE)
-      redirectTo: `${baseUrl}/auth/callback?next=/definir-senha`
+      redirectTo: `${baseUrl}/callback`
     }
   );
 

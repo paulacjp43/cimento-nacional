@@ -436,12 +436,12 @@ export function RdoPrintLayout({
             {sectorAttachments.length > 0 && (
               <div className="card p-4 mb-4 border border-slate-200 rounded-lg" style={{ pageBreakInside: 'avoid' }}>
                 <h3 className="text-sm font-bold border-b border-slate-200 pb-1.5 mb-3 text-slate-800">Laudo Fotográfico - Setor {sectorInfo.label}</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 print:grid-cols-2 gap-4">
                   {sectorAttachments.map((att, index) => {
                     const timeStr = att.created_at ? new Date(att.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '-';
                     return (
-                      <div key={att.id} className="border border-slate-200 rounded-lg overflow-hidden flex flex-col bg-slate-50">
-                        <div className="aspect-[4/3] relative bg-slate-100 flex items-center justify-center overflow-hidden border-b border-slate-200">
+                      <div key={att.id} className="border border-slate-200 rounded-lg overflow-hidden flex flex-col bg-slate-50 print:break-inside-avoid">
+                        <div className="aspect-[4/3] h-48 print:h-48 sm:h-auto relative bg-slate-100 flex items-center justify-center overflow-hidden border-b border-slate-200">
                           {att.url ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={att.url} alt={att.caption || att.original_name} className="object-cover w-full h-full" />

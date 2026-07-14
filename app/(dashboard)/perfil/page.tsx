@@ -4,6 +4,7 @@ import { User, Mail, Shield, Building2 } from "lucide-react";
 import type { Metadata } from "next";
 import { UserRole } from "@/types/database";
 import { ChangePasswordForm } from "./ChangePasswordForm";
+import { ChangeNameForm } from "./ChangeNameForm";
 
 export const metadata: Metadata = {
   title: "Meu Perfil",
@@ -48,14 +49,13 @@ export default async function PerfilPage() {
         {/* Informações do Usuário */}
         <div className="md:col-span-1 space-y-6">
           <div className="card p-6">
-            <div className="flex flex-col items-center text-center pb-6 border-b border-gray-100 dark:border-gray-800">
-              <div className="w-20 h-20 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-2xl font-bold mb-4">
-                {profile.full_name.substring(0, 2).toUpperCase()}
-              </div>
-              <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-                {profile.full_name}
-              </h2>
+            <ChangeNameForm initialName={profile.full_name} />
+            <div className="flex flex-col items-center pb-6 border-b border-gray-100 dark:border-gray-800">
               <span className={`mt-2 px-2.5 py-1 rounded-full text-xs font-medium flex items-center gap-1.5 w-fit ${roleMap[profile.role as UserRole]?.color || "bg-gray-100 text-gray-800"}`}>
+                {profile.role === 'company_admin' && <Shield className="w-3 h-3" />}
+                {roleMap[profile.role as UserRole]?.label || profile.role}
+              </span>
+            </div>
                 {profile.role === 'company_admin' && <Shield className="w-3 h-3" />}
                 {roleMap[profile.role as UserRole]?.label || profile.role}
               </span>

@@ -81,8 +81,9 @@ export default function DefinirSenhaPage() {
 
     toast.success("Senha definida com sucesso!");
     
-    // Após definir a senha, como ele já está autenticado, manda pro dashboard
-    router.push("/dashboard");
+    // Desloga o usuário para forçar o login com a nova senha
+    await supabase.auth.signOut();
+    router.push("/login");
     router.refresh();
   };
 

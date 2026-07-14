@@ -60,20 +60,35 @@ export async function createInvitation(formData: FormData) {
   // Registrar na tabela invitations para auditoria/listagem
   const { error } = await supabase
     .from("invitations")
-    .insert({
-      company_id: profile.company_id,
-      email: email.toLowerCase(),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      role: role as any,
-      created_by: user.id
-    });
+    .upsert(
+      {
+        company_id: profile.company_id,
+        email: email.toLowerCase(),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        role: role as any,
+        created_by: user.id,
+        status: "pending",
+        updated_at: new Date().toISOString()
+      },
+      { onConflict: "email" }
+    );
 
   if (error) {
+    // Se o onConflict falhar porque a constraint não é apenas 'email', 
+    // fazemos um update manual como fallback
     if (error.code === "23505") {
-      // Se já existe um convite pendente, podemos apenas atualizar ou ignorar,
-      // pois o email já foi reenviado pelo admin.inviteUserByEmail acima.
+      await supabase
+        .from("invitations")
+        .update({
+          role: role as any,
+          company_id: profile.company_id,
+          status: "pending",
+          updated_at: new Date().toISOString()
+        })
+        .eq("email", email.toLowerCase())
+        .eq("status", "pending");
     } else {
-      console.error(error);
+      console.error("Erro ao inserir na tabela invitations:", error);
     }
   }
 

@@ -56,10 +56,6 @@ export default async function PerfilPage() {
                 {roleMap[profile.role as UserRole]?.label || profile.role}
               </span>
             </div>
-                {profile.role === 'company_admin' && <Shield className="w-3 h-3" />}
-                {roleMap[profile.role as UserRole]?.label || profile.role}
-              </span>
-            </div>
 
             <div className="pt-6 space-y-4">
               <div className="flex items-start gap-3">

@@ -11,6 +11,7 @@ const PUBLIC_ROUTES = [
   "/primeiro-acesso",
   "/convite",
   "/callback",
+  "/aceitar-convite",
 ];
 
 // Rotas exclusivas do superadmin

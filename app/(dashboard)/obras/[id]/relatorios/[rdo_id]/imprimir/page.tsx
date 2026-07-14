@@ -152,7 +152,9 @@ export default async function RdoPrintPage({
           <ArrowLeft className="w-4 h-4 mr-2" /> Voltar para o RDO
         </Link>
         <div className="flex items-center gap-3">
-          <span className="text-slate-500 text-sm font-medium">Visão Consolidada (Preview de Impressão)</span>
+          <span className="text-slate-500 text-sm font-medium">
+            {sector ? "Impressão de Setor (Preview)" : "Visão Consolidada (Preview de Impressão)"}
+          </span>
           {/* Client component wrapper for print */}
           <PrintButton />
         </div>

@@ -89,8 +89,7 @@ export function RdoPrintLayout({
     <div className={`${previewMode ? 'block py-8 bg-slate-100' : 'hidden print:block'} w-full text-black bg-white`}>
       
       {/* ─── PÁGINA DE RESUMO (CAPA) ─── */}
-      {!singleSector && (
-        <div className="print-page border-2 border-slate-300 p-8 rounded-lg mb-6 min-h-[1050px] flex flex-col relative">
+      <div className="print-page border-2 border-slate-300 p-8 rounded-lg mb-6 min-h-[1050px] flex flex-col relative">
         <div className="flex items-center justify-between gap-6 mb-8">
           <div className="flex items-center gap-4">
             <div className="w-24 h-24 bg-white overflow-hidden p-1 flex-shrink-0 flex items-center justify-center border-2 border-slate-200 rounded">
@@ -99,12 +98,20 @@ export function RdoPrintLayout({
             </div>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-slate-800">CIMENTO NACIONAL</h1>
-              <h2 className="text-lg text-slate-500 font-medium">Relatório Diário de Obra Consolidado</h2>
+              <h2 className="text-lg text-slate-500 font-medium">
+                {singleSector 
+                  ? `Relatório Diário de Obra - Setor: ${filteredSectorsList[0]?.label || "Específico"}`
+                  : "Relatório Diário de Obra Consolidado"
+                }
+              </h2>
             </div>
           </div>
           <div className="text-right">
             <div className="text-sm font-bold text-slate-700 bg-slate-100 border border-slate-200 px-4 py-2 rounded inline-block mb-1">
-              STATUS CONSOLIDADO: {statusLabel.toUpperCase()}
+              {singleSector 
+                ? `STATUS: ${REPORT_STATUS_LABELS[activities.find(a => a.sector === singleSector)?.status as keyof typeof REPORT_STATUS_LABELS]?.toUpperCase() || "PENDENTE"}`
+                : `STATUS CONSOLIDADO: ${statusLabel.toUpperCase()}`
+              }
             </div>
             <p className="text-sm text-slate-500 mt-1">RDO Nº: {String(report.report_number || report.id).substring(0,8).padStart(5, '0')}</p>
             <p className="text-[10px] text-slate-400 mt-0.5">CÓD. VERIFICAÇÃO: {report.id.substring(0, 13).toUpperCase()}</p>
@@ -177,25 +184,26 @@ export function RdoPrintLayout({
           </div>
         )}
 
-        <div className="mt-auto pt-8 border-t border-slate-200">
-          <h3 className="text-sm font-bold text-slate-800 mb-4 text-center">Resumo de Aprovações</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {sectorsList.map(s => {
-              const sec = activities.find(a => a.sector === s.id) || { status: 'draft' };
-              const isApproved = sec.status === 'approved';
-              return (
-                <div key={s.id} className="text-center p-3 border border-slate-200 rounded bg-slate-50">
-                  <span className="block font-bold text-slate-800">{s.label}</span>
-                  <span className={`text-xs font-semibold mt-1 block ${isApproved ? 'text-green-600' : 'text-slate-500'}`}>
-                    {REPORT_STATUS_LABELS[sec.status as keyof typeof REPORT_STATUS_LABELS] || "Pendente"}
-                  </span>
-                </div>
-              );
-            })}
+        {!singleSector && (
+          <div className="mt-auto pt-8 border-t border-slate-200">
+            <h3 className="text-sm font-bold text-slate-800 mb-4 text-center">Resumo de Aprovações</h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {sectorsList.map(s => {
+                const sec = activities.find(a => a.sector === s.id) || { status: 'draft' };
+                const isApproved = sec.status === 'approved';
+                return (
+                  <div key={s.id} className="text-center p-3 border border-slate-200 rounded bg-slate-50">
+                    <span className="block font-bold text-slate-800">{s.label}</span>
+                    <span className={`text-xs font-semibold mt-1 block ${isApproved ? 'text-green-600' : 'text-slate-500'}`}>
+                      {REPORT_STATUS_LABELS[sec.status as keyof typeof REPORT_STATUS_LABELS] || "Pendente"}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
       </div>
-      )}
 
       {/* ─── PÁGINAS POR SETOR ─── */}
       {filteredSectorsList.map(sectorInfo => {

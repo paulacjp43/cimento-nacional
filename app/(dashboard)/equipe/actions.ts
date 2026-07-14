@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
 
 import { UserRole } from "@/types/database";
@@ -101,7 +102,17 @@ export async function deleteTeamMemberAction(userId: string) {
     .eq("company_id", profile.company_id as string);
 
   if (error) {
-    throw new Error(`Erro ao excluir membro: ${error.message}`);
+    throw new Error(`Erro ao excluir membro do banco: ${error.message}`);
+  }
+
+  // Deletar o usuário do sistema de autenticação (auth.users)
+  const supabaseAdmin = createAdminClient();
+  const { error: authError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+  
+  if (authError) {
+    console.error("Erro ao deletar usuário do auth:", authError);
+    // Mesmo se falhar aqui, o profile já foi deletado (ou vice-versa se mudarmos a ordem).
+    // Idealmente seria tudo ou nada, mas a exclusão do profile já remove o acesso dele.
   }
 
   revalidatePath("/equipe");

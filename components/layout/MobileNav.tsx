@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, HardHat, FileText, AlertTriangle, Calendar } from "lucide-react";
+import { LayoutDashboard, HardHat, MessageSquare, Users, User } from "lucide-react";
 import type { UserRole } from "@/types/database";
 
 interface MobileNavProps {
@@ -23,21 +23,21 @@ const NAV = [
     roles: ["superadmin", "company_admin", "project_manager", "civil_responsible", "electrical_responsible", "mechanical_responsible", "viewer"] as UserRole[],
   },
   {
-    href: "/relatorios",
-    label: "Relatórios",
-    icon: FileText,
+    href: "/comunicacao",
+    label: "Comunicação",
+    icon: MessageSquare,
     roles: ["superadmin", "company_admin", "project_manager", "civil_responsible", "electrical_responsible", "mechanical_responsible", "viewer"] as UserRole[],
   },
   {
-    href: "/calendario",
-    label: "Calendário",
-    icon: Calendar,
-    roles: ["superadmin", "company_admin", "project_manager", "civil_responsible", "electrical_responsible", "mechanical_responsible", "viewer"] as UserRole[],
+    href: "/equipe",
+    label: "Equipe",
+    icon: Users,
+    roles: ["superadmin", "company_admin"] as UserRole[],
   },
   {
-    href: "/ocorrencias",
-    label: "Ocorrências",
-    icon: AlertTriangle,
+    href: "/perfil",
+    label: "Perfil",
+    icon: User,
     roles: ["superadmin", "company_admin", "project_manager", "civil_responsible", "electrical_responsible", "mechanical_responsible", "viewer"] as UserRole[],
   },
 ];

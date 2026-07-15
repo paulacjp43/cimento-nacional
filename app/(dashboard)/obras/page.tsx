@@ -126,18 +126,18 @@ export default async function ObrasPage() {
                     </span>
                   </div>
                 )}
-                <div className="pt-4 mt-2 flex justify-between w-full border-t border-gray-100">
+                <div className="pt-4 mt-4 grid grid-cols-2 gap-3 w-full border-t border-gray-100">
                   <Link 
                     href={`/obras/${project.id}`}
-                    className="text-sm font-medium text-gray-500 hover:text-primary-600 transition-colors"
+                    className="btn btn-primary w-full shadow-sm text-sm"
                   >
                     Painel da Obra
                   </Link>
                   <Link 
                     href={`/obras/${project.id}/calendario`}
-                    className="text-sm font-medium text-primary-600 flex items-center hover:text-primary-700 transition-colors z-10"
+                    className="btn btn-outline w-full shadow-sm text-sm z-10"
                   >
-                    Ver RDOs <ChevronRight className="w-4 h-4 ml-1" />
+                    Ver RDOs
                   </Link>
                 </div>
               </div>

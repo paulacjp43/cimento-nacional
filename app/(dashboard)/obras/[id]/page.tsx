@@ -4,6 +4,7 @@ import { HardHat, Edit, Users, Calendar, MapPin, Building2, ChevronRight, FileTe
 import type { Metadata } from "next";
 import Link from "next/link";
 import { DeleteProjectButton } from "./DeleteProjectButton";
+import { ProjectDocuments } from "./ProjectDocuments";
 
 export const metadata: Metadata = {
   title: "Detalhes da Obra",
@@ -120,6 +121,8 @@ export default async function ObraDetalhesPage({ params }: { params: Promise<{ i
               </div>
             )}
           </div>
+
+          <ProjectDocuments projectId={project.id} />
         </div>
 
         {/* Coluna Direita: Ações Rápidas e Dashboard */}

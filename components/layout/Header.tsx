@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Bell, Menu, X } from "lucide-react";
+import { Bell } from "lucide-react";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { getInitials } from "@/lib/utils";
@@ -14,7 +14,6 @@ interface HeaderProps {
 export function Header({ profile }: HeaderProps) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isOnline, setIsOnline] = useState(true);
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -50,19 +49,6 @@ export function Header({ profile }: HeaderProps) {
         borderColor: "var(--color-border)",
       }}
     >
-      {/* Botão hamburguer mobile */}
-      <button
-        className="lg:hidden btn btn-ghost btn-icon"
-        onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
-        aria-label="Abrir menu"
-        aria-expanded={mobileSidebarOpen}
-      >
-        {mobileSidebarOpen ? (
-          <X className="w-5 h-5" />
-        ) : (
-          <Menu className="w-5 h-5" />
-        )}
-      </button>
 
       {/* Logo mobile */}
       <div className="lg:hidden flex items-center gap-2">

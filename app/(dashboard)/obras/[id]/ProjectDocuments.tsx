@@ -110,11 +110,18 @@ export function ProjectDocuments({ projectId }: { projectId: string }) {
   }
 
   async function handleDownload(doc: ProjectDocument) {
-    const { data } = supabase.storage
-      .from("gestobra-files")
-      .getPublicUrl(doc.file_url);
+    try {
+      const { data, error } = await supabase.storage
+        .from("gestobra-files")
+        .createSignedUrl(doc.file_url, 60 * 60); // 1 hour expiration
+        
+      if (error) throw error;
       
-    window.open(data.publicUrl, '_blank');
+      window.open(data.signedUrl, '_blank');
+    } catch (error) {
+      console.error("Error generating signed URL:", error);
+      alert("Erro ao abrir o documento.");
+    }
   }
 
   function formatBytes(bytes: number) {

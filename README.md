@@ -73,18 +73,11 @@ Acesse: http://localhost:3000
 
 ---
 
-## 👥 Usuários de Demonstração (desenvolvimento)
+## 👥 Contas de Acesso
 
-| Perfil | E-mail | Senha |
-|---|---|---|
-| Administrador | admin@assp.com.br | Gestobra@2024 |
-| Gestor da Obra | gestor@assp.com.br | Gestobra@2024 |
-| Responsável Civil | civil@assp.com.br | Gestobra@2024 |
-| Responsável Elétrica | eletrica@assp.com.br | Gestobra@2024 |
-| Responsável Mecânica | mecanica@assp.com.br | Gestobra@2024 |
-| Visualizador/Fiscal | fiscal@assp.com.br | Gestobra@2024 |
+Para fins de segurança e conformidade, não fornecemos contas genéricas com senhas pré-configuradas no código.
 
-> ⚠️ Esses dados são apenas para desenvolvimento. Não use em produção.
+Recomendamos que durante o desenvolvimento você crie suas próprias contas diretamente pelo painel do Supabase, utilizando e-mails fictícios (ex: `admin@example.com`, `gestor@example.com`) e definindo senhas seguras. Após a criação, você pode atribuir os perfis de acesso diretamente na tabela `profiles`.
 
 ---
 

@@ -37,6 +37,21 @@ export async function createDailyReportAction(projectId: string, formData: FormD
     throw new Error("Já existe um relatório criado para esta data.");
   }
 
+  // Validate if the user is authorized to create reports (Admin, Manager, etc.)
+  const { data: hasAccess, error: accessError } = await supabase
+    .rpc("can_view_project" as any, { p_project_id: projectId });
+
+  if (accessError || !hasAccess) {
+    throw new Error("Usuário não tem permissão para acessar esta obra.");
+  }
+
+  const { data: profileRole } = await supabase.rpc("get_my_role" as any);
+  const { data: projectRole } = await supabase.rpc("get_project_role" as any, { p_project_id: projectId });
+
+  if (profileRole !== 'company_admin' && profileRole !== 'superadmin' && projectRole !== 'manager') {
+    throw new Error("Apenas administradores e gerentes de obra podem iniciar um RDO.");
+  }
+
   // Insert the daily report
   const { data: newReport, error: insertError } = await supabase
     .from("daily_reports")
@@ -80,7 +95,13 @@ export async function updateAllSectorsStatusAction(reportId: string, projectId: 
 
   if (!user) throw new Error("Não autenticado");
 
-  // Check permissions here if needed
+  // Check if user is admin or manager
+  const { data: profileRole } = await supabase.rpc("get_my_role" as any);
+  const { data: projectRole } = await supabase.rpc("get_project_role" as any, { p_project_id: projectId });
+
+  if (profileRole !== 'company_admin' && profileRole !== 'superadmin' && projectRole !== 'manager') {
+    throw new Error("Apenas administradores e gerentes podem atualizar o status de todos os setores de uma vez.");
+  }
   
   const { error } = await supabase
     .from("daily_report_sectors")
@@ -98,6 +119,25 @@ export async function updateSectorStatusAction(reportId: string, projectId: stri
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) throw new Error("Não autenticado");
+
+  const { data: profileRole } = await supabase.rpc("get_my_role" as any);
+  const { data: projectRole } = await supabase.rpc("get_project_role" as any, { p_project_id: projectId });
+
+  const isManagerOrAdmin = profileRole === 'company_admin' || profileRole === 'superadmin' || projectRole === 'manager';
+  const isSectorResponsible = projectRole === sector || (projectRole === 'electrical' && sector === 'eletrica') || (projectRole === 'mechanical' && sector === 'mecanica');
+
+  if (!isManagerOrAdmin && !isSectorResponsible) {
+    throw new Error("Você não tem permissão para atualizar o status deste setor.");
+  }
+
+  // Se o status for de aprovação ou devolução, requer manager ou admin
+  if ((status === 'approved' || status === 'returned' || status === 'under_review') && !isManagerOrAdmin) {
+    if (status === 'under_review' && isSectorResponsible) {
+       // O responsável pelo setor PODE enviar para revisão.
+    } else {
+       throw new Error("Você não tem permissão para aprovar ou devolver este setor.");
+    }
+  }
 
   const { error } = await supabase
     .from("daily_report_sectors")

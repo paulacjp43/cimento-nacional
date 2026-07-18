@@ -99,6 +99,7 @@ export function OccurrencesTab({ reportId, companyId, projectId, sector, canEdit
         company_id: companyId,
         project_id: projectId,
         daily_report_id: reportId,
+        sector: e.sector || sector,
         title: e.title,
         description: e.description,
         category: e.category,

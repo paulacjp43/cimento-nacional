@@ -91,6 +91,12 @@ export default async function RdoPrintPage({
     .eq("daily_report_id", rdo_id)
     .order("created_at", { ascending: true });
 
+  const { data: concreteControl } = await supabase
+    .from("concrete_control")
+    .select("*")
+    .eq("daily_report_id", rdo_id)
+    .order("created_at", { ascending: true });
+
   const { data: occurrences } = await supabase
     .from("occurrences")
     .select("*")
@@ -167,6 +173,7 @@ export default async function RdoPrintPage({
           workforce={workforce || []}
           equipment={equipment || []}
           materials={materials || []}
+          concreteControl={concreteControl || []}
           occurrences={occurrences || []}
           activities={activities}
           attachments={attachments}

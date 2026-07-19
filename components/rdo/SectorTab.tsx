@@ -4,6 +4,7 @@ import { WorkforceTab } from "./WorkforceTab";
 import { ActivitiesTab } from "./ActivitiesTab";
 import { EquipmentTab } from "./EquipmentTab";
 import { MaterialsTab } from "./MaterialsTab";
+import { ConcreteControlTab } from "./ConcreteControlTab";
 import { OccurrencesTab } from "./OccurrencesTab";
 import { AttachmentsTab } from "./AttachmentsTab";
 import { SafetyMetricsTab } from "./SafetyMetricsTab";
@@ -41,6 +42,12 @@ export function SectorTab({ reportId, companyId, projectId, sector, canEdit }: S
       <div className="card p-6 fade-in">
         <MaterialsTab reportId={reportId} companyId={companyId} sector={sector} canEdit={canEdit} />
       </div>
+
+      {sector === "civil" && (
+        <div className="card p-6 fade-in">
+          <ConcreteControlTab reportId={reportId} companyId={companyId} projectId={projectId} canEdit={canEdit} />
+        </div>
+      )}
 
       <div className="card p-6 fade-in">
         <OccurrencesTab reportId={reportId} companyId={companyId} projectId={projectId} sector={sector} canEdit={canEdit} />

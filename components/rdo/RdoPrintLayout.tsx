@@ -15,6 +15,8 @@ interface RdoPrintLayoutProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   materials: any[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  concreteControl?: any[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   occurrences: any[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   activities: any[];
@@ -57,6 +59,7 @@ export function RdoPrintLayout({
   workforce, 
   equipment, 
   materials, 
+  concreteControl = [],
   occurrences, 
   activities, 
   attachments,
@@ -305,19 +308,31 @@ export function RdoPrintLayout({
             {sectorInfo.id !== "safety" && (
               <div className="card p-4 mb-4 border border-slate-200 rounded-lg">
                 <h3 className="text-sm font-bold border-b border-slate-200 pb-1.5 mb-3 text-slate-800">Atividades</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div className="space-y-3 text-xs">
+                  {sectorActivities.day_forecast && (
+                    <div>
+                      <span className="font-bold text-slate-700 block border-b border-slate-100 pb-0.5 mb-0.5">Previsão do Dia (Hoje):</span>
+                      <p className="text-slate-600 whitespace-pre-line">{sectorActivities.day_forecast}</p>
+                    </div>
+                  )}
                   <div>
-                    <span className="font-bold text-slate-700 block border-b border-slate-100 pb-1 mb-1">Executadas (Hoje):</span>
+                    <span className="font-bold text-slate-700 block border-b border-slate-100 pb-0.5 mb-0.5">Atividades Executadas (Hoje):</span>
                     <p className="text-slate-600 whitespace-pre-line">{sectorActivities.executed_activities || "Nenhuma atividade declarada."}</p>
                   </div>
+                  {sectorActivities.not_executed_activities && (
+                    <div>
+                      <span className="font-bold text-slate-700 block border-b border-slate-100 pb-0.5 mb-0.5">Atividades Programadas Não Executadas:</span>
+                      <p className="text-slate-600 whitespace-pre-line">{sectorActivities.not_executed_activities}</p>
+                    </div>
+                  )}
                   <div>
-                    <span className="font-bold text-slate-700 block border-b border-slate-100 pb-1 mb-1">Previsão (Amanhã):</span>
+                    <span className="font-bold text-slate-700 block border-b border-slate-100 pb-0.5 mb-0.5">Previsão para o Próximo Dia (Amanhã):</span>
                     <p className="text-slate-600 whitespace-pre-line">{sectorActivities.next_day_forecast || "Nenhuma previsão declarada."}</p>
                   </div>
                 </div>
                 {sectorActivities.general_observations && (
-                  <div className="mt-4 text-xs bg-slate-50 p-2 rounded border border-slate-200">
-                    <span className="font-bold text-slate-700 block mb-1">Observações:</span>
+                  <div className="mt-3 text-xs bg-slate-50 p-2 rounded border border-slate-200">
+                    <span className="font-bold text-slate-700 block mb-0.5">Observações:</span>
                     <p className="text-slate-600 whitespace-pre-line">{sectorActivities.general_observations}</p>
                   </div>
                 )}
@@ -410,6 +425,58 @@ export function RdoPrintLayout({
                 </table>
               )}
             </div>
+
+            {/* CONTROLE TECNOLÓGICO (Somente no setor Civil) */}
+            {sectorInfo.id === "civil" && (
+              <div className="card p-4 mb-4 border border-slate-200 rounded-lg" style={{ pageBreakInside: 'avoid' }}>
+                <h3 className="text-sm font-bold border-b border-slate-200 pb-1.5 mb-2 text-slate-800">Acompanhamento de Controle Tecnológico (Concreto)</h3>
+                {concreteControl.length === 0 ? (
+                  <p className="text-xs italic text-slate-400">Nenhum registro de controle tecnológico.</p>
+                ) : (
+                  <table className="w-full text-[10px]">
+                    <thead>
+                      <tr className="bg-slate-50">
+                        <th className="text-left p-1 border">Membro Estrutural</th>
+                        <th className="text-center w-20 p-1 border">Data Moldagem</th>
+                        <th className="text-left p-1 border">Fornecedor</th>
+                        <th className="text-center w-16 p-1 border">Classe (Fck)</th>
+                        <th className="text-center w-16 p-1 border">Slump (mm)</th>
+                        <th className="text-center w-16 p-1 border">Vol (m³)</th>
+                        <th className="text-left p-1 border">NF / Lacre</th>
+                        <th className="text-center w-16 p-1 border">7d (MPa)</th>
+                        <th className="text-center w-16 p-1 border">28d (MPa)</th>
+                        <th className="text-center w-20 p-1 border">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {concreteControl.map((entry: any) => {
+                        const dateParts = entry.molding_date.split('-');
+                        const formattedMoldingDate = dateParts.length === 3 
+                          ? `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}` 
+                          : entry.molding_date;
+                        return (
+                          <tr key={entry.id}>
+                            <td className="p-1 border font-medium">{entry.structural_element}</td>
+                            <td className="p-1 border text-center">{formattedMoldingDate}</td>
+                            <td className="p-1 border">{entry.supplier || "-"}</td>
+                            <td className="p-1 border text-center">{entry.concrete_class || "-"}</td>
+                            <td className="p-1 border text-center">{entry.slump || "-"}</td>
+                            <td className="p-1 border text-center">{entry.volume || "-"}</td>
+                            <td className="p-1 border">{entry.delivery_note || "-"}</td>
+                            <td className="p-1 border text-center">{entry.strength_7d || "-"}</td>
+                            <td className="p-1 border text-center">{entry.strength_28d || "-"}</td>
+                            <td className={`p-1 border text-center font-semibold ${
+                              entry.status === 'Aprovado' ? 'text-green-600' :
+                              entry.status === 'Reprovado' ? 'text-red-600' : 'text-amber-600'
+                            }`}>{entry.status}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            )}
 
             {/* OCORRÊNCIAS */}
             {sectorOccurrences.length > 0 && (

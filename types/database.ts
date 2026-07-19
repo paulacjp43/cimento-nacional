@@ -192,6 +192,85 @@ export type Database = {
           },
         ]
       }
+      concrete_control: {
+        Row: {
+          id: string
+          company_id: string
+          project_id: string
+          daily_report_id: string
+          molding_date: string
+          structural_element: string
+          supplier: string | null
+          concrete_class: string | null
+          slump: number | null
+          volume: number | null
+          delivery_note: string | null
+          strength_7d: number | null
+          strength_28d: number | null
+          status: string
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          company_id: string
+          project_id: string
+          daily_report_id: string
+          molding_date: string
+          structural_element: string
+          supplier?: string | null
+          concrete_class?: string | null
+          slump?: number | null
+          volume?: number | null
+          delivery_note?: string | null
+          strength_7d?: number | null
+          strength_28d?: number | null
+          status?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          company_id?: string
+          project_id?: string
+          daily_report_id?: string
+          molding_date?: string
+          structural_element?: string
+          supplier?: string | null
+          concrete_class?: string | null
+          slump?: number | null
+          volume?: number | null
+          delivery_note?: string | null
+          strength_7d?: number | null
+          strength_28d?: number | null
+          status?: string
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concrete_control_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concrete_control_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "concrete_control_daily_report_id_fkey"
+            columns: ["daily_report_id"]
+            isOneToOne: false
+            referencedRelation: "daily_reports"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       companies: {
         Row: {
           address: string | null

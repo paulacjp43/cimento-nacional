@@ -309,22 +309,18 @@ export function RdoPrintLayout({
               <div className="card p-4 mb-4 border border-slate-200 rounded-lg">
                 <h3 className="text-sm font-bold border-b border-slate-200 pb-1.5 mb-3 text-slate-800">Atividades</h3>
                 <div className="space-y-3 text-xs">
-                  {sectorActivities.day_forecast && (
-                    <div>
-                      <span className="font-bold text-slate-700 block border-b border-slate-100 pb-0.5 mb-0.5">Previsão do Dia (Hoje):</span>
-                      <p className="text-slate-600 whitespace-pre-line">{sectorActivities.day_forecast}</p>
-                    </div>
-                  )}
+                  <div>
+                    <span className="font-bold text-slate-700 block border-b border-slate-100 pb-0.5 mb-0.5">Previsão do Dia (Hoje):</span>
+                    <p className="text-slate-600 whitespace-pre-line">{sectorActivities.day_forecast || "Nenhuma previsão declarada."}</p>
+                  </div>
                   <div>
                     <span className="font-bold text-slate-700 block border-b border-slate-100 pb-0.5 mb-0.5">Atividades Executadas (Hoje):</span>
                     <p className="text-slate-600 whitespace-pre-line">{sectorActivities.executed_activities || "Nenhuma atividade declarada."}</p>
                   </div>
-                  {sectorActivities.not_executed_activities && (
-                    <div>
-                      <span className="font-bold text-slate-700 block border-b border-slate-100 pb-0.5 mb-0.5">Atividades Programadas Não Executadas:</span>
-                      <p className="text-slate-600 whitespace-pre-line">{sectorActivities.not_executed_activities}</p>
-                    </div>
-                  )}
+                  <div>
+                    <span className="font-bold text-slate-700 block border-b border-slate-100 pb-0.5 mb-0.5">Atividades Programadas Não Executadas:</span>
+                    <p className="text-slate-600 whitespace-pre-line">{sectorActivities.not_executed_activities || "Nenhuma atividade declarada."}</p>
+                  </div>
                   <div>
                     <span className="font-bold text-slate-700 block border-b border-slate-100 pb-0.5 mb-0.5">Previsão para o Próximo Dia (Amanhã):</span>
                     <p className="text-slate-600 whitespace-pre-line">{sectorActivities.next_day_forecast || "Nenhuma previsão declarada."}</p>

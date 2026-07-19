@@ -205,8 +205,10 @@ export type Database = {
           slump: number | null
           volume: number | null
           delivery_note: string | null
-          strength_7d: number | null
-          strength_28d: number | null
+          test_age_1: number | null
+          strength_1: number | null
+          test_age_2: number | null
+          strength_2: number | null
           status: string
           created_at: string | null
           updated_at: string | null
@@ -223,8 +225,10 @@ export type Database = {
           slump?: number | null
           volume?: number | null
           delivery_note?: string | null
-          strength_7d?: number | null
-          strength_28d?: number | null
+          test_age_1?: number | null
+          strength_1?: number | null
+          test_age_2?: number | null
+          strength_2?: number | null
           status?: string
           created_at?: string | null
           updated_at?: string | null
@@ -241,8 +245,10 @@ export type Database = {
           slump?: number | null
           volume?: number | null
           delivery_note?: string | null
-          strength_7d?: number | null
-          strength_28d?: number | null
+          test_age_1?: number | null
+          strength_1?: number | null
+          test_age_2?: number | null
+          strength_2?: number | null
           status?: string
           created_at?: string | null
           updated_at?: string | null

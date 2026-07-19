@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Plus, Trash2, Loader2, Users } from "lucide-react";
+import { Plus, Trash2, Loader2, Users, FileSpreadsheet } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { toast } from "sonner";
+import { WorkforceExcelImportModal } from "./WorkforceExcelImportModal";
 
 interface WorkforceEntry {
   id: string;
@@ -23,7 +24,8 @@ export function WorkforceTab({ reportId, companyId, sector, canEdit = true }: { 
   const [entries, setEntries] = useState<WorkforceEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  
+  const [showImportModal, setShowImportModal] = useState(false);
+
   const supabase = createClient();
 
   const fetchEntries = useCallback(async () => {
@@ -130,22 +132,57 @@ export function WorkforceTab({ reportId, companyId, sector, canEdit = true }: { 
     }
   };
 
+  const handleImportRows = useCallback((imported: { role: string; quantity: number; company_name: string; hours_worked: number; observations: string }[]) => {
+    const newRows: WorkforceEntry[] = imported.map((r) => ({
+      id: `temp-${Date.now()}-${Math.random()}`,
+      isNew: true,
+      role: r.role,
+      quantity: r.quantity,
+      company_name: r.company_name || "",
+      hours_worked: r.hours_worked || 8,
+      sector: sector as any,
+      observations: r.observations || "",
+    }));
+    setEntries((prev) => [...prev, ...newRows]);
+  }, [sector]);
+
   if (loading) {
     return <div className="py-8 flex justify-center"><Loader2 className="w-6 h-6 animate-spin text-gray-400" /></div>;
   }
 
   return (
     <div className="space-y-4">
+      {showImportModal && (
+        <WorkforceExcelImportModal
+          sector={sector}
+          onImport={handleImportRows}
+          onClose={() => setShowImportModal(false)}
+        />
+      )}
+
       <div className="flex justify-between items-center mb-4">
         <h4 className="font-medium text-sm text-gray-700 dark:text-gray-300 flex items-center gap-2">
           <Users className="w-4 h-4 text-primary-500" /> Registros de Mão de Obra
         </h4>
-        <button
-          onClick={handleAddRow}
-          className="btn bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 text-xs py-1.5"
-        >
-          <Plus className="w-3.5 h-3.5 mr-1" /> Adicionar Linha
-        </button>
+        <div className="flex items-center gap-2">
+          {canEdit && (
+            <button
+              onClick={() => setShowImportModal(true)}
+              className="btn bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/30 dark:text-green-400 dark:hover:bg-green-900/50 text-xs py-1.5"
+              title="Importar planilha Excel"
+            >
+              <FileSpreadsheet className="w-3.5 h-3.5 mr-1" /> Importar Excel
+            </button>
+          )}
+          {canEdit && (
+            <button
+              onClick={handleAddRow}
+              className="btn bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 text-xs py-1.5"
+            >
+              <Plus className="w-3.5 h-3.5 mr-1" /> Adicionar Linha
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="overflow-x-auto">

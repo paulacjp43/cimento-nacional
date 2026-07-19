@@ -443,8 +443,10 @@ export function RdoPrintLayout({
                         <th className="text-center w-16 p-1 border">Slump (mm)</th>
                         <th className="text-center w-16 p-1 border">Vol (m³)</th>
                         <th className="text-left p-1 border">NF / Lacre</th>
-                        <th className="text-center w-16 p-1 border">7d (MPa)</th>
-                        <th className="text-center w-16 p-1 border">28d (MPa)</th>
+                        <th className="text-center w-12 p-1 border">Idade 1</th>
+                        <th className="text-center w-16 p-1 border">Fck 1 (MPa)</th>
+                        <th className="text-center w-12 p-1 border">Idade 2</th>
+                        <th className="text-center w-16 p-1 border">Fck 2 (MPa)</th>
                         <th className="text-center w-20 p-1 border">Status</th>
                       </tr>
                     </thead>
@@ -463,8 +465,10 @@ export function RdoPrintLayout({
                             <td className="p-1 border text-center">{entry.slump || "-"}</td>
                             <td className="p-1 border text-center">{entry.volume || "-"}</td>
                             <td className="p-1 border">{entry.delivery_note || "-"}</td>
-                            <td className="p-1 border text-center">{entry.strength_7d || "-"}</td>
-                            <td className="p-1 border text-center">{entry.strength_28d || "-"}</td>
+                            <td className="p-1 border text-center font-semibold text-blue-600">{entry.test_age_1 ?? "-"}d</td>
+                            <td className="p-1 border text-center">{entry.strength_1 || "-"}</td>
+                            <td className="p-1 border text-center font-semibold text-amber-600">{entry.test_age_2 ?? "-"}d</td>
+                            <td className="p-1 border text-center">{entry.strength_2 || "-"}</td>
                             <td className={`p-1 border text-center font-semibold ${
                               entry.status === 'Aprovado' ? 'text-green-600' :
                               entry.status === 'Reprovado' ? 'text-red-600' : 'text-amber-600'

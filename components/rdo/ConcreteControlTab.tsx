@@ -16,8 +16,10 @@ interface ConcreteEntry {
   slump: number | string | null;
   volume: number | string | null;
   delivery_note: string | null;
-  strength_7d: number | string | null;
-  strength_28d: number | string | null;
+  test_age_1: number | string | null;
+  strength_1: number | string | null;
+  test_age_2: number | string | null;
+  strength_2: number | string | null;
   status: string;
   daily_report_id?: string | null;
   company_id?: string | null;
@@ -76,8 +78,10 @@ export function ConcreteControlTab({
       slump: "",
       volume: "",
       delivery_note: "",
-      strength_7d: "",
-      strength_28d: "",
+      test_age_1: 7,
+      strength_1: "",
+      test_age_2: 28,
+      strength_2: "",
       status: "Aguardando",
     };
     setEntries((prev) => [...prev, newRow]);
@@ -144,8 +148,10 @@ export function ConcreteControlTab({
           slump: e.slump ? parseInt(String(e.slump)) : null,
           volume: e.volume ? parseFloat(String(e.volume)) : null,
           delivery_note: e.delivery_note || null,
-          strength_7d: e.strength_7d ? parseFloat(String(e.strength_7d)) : null,
-          strength_28d: e.strength_28d ? parseFloat(String(e.strength_28d)) : null,
+          test_age_1: e.test_age_1 ? parseInt(String(e.test_age_1)) : null,
+          strength_1: e.strength_1 ? parseFloat(String(e.strength_1)) : null,
+          test_age_2: e.test_age_2 ? parseInt(String(e.test_age_2)) : null,
+          strength_2: e.strength_2 ? parseFloat(String(e.strength_2)) : null,
           status: e.status || "Aguardando",
         }));
 
@@ -169,8 +175,10 @@ export function ConcreteControlTab({
               slump: e.slump ? parseInt(String(e.slump)) : null,
               volume: e.volume ? parseFloat(String(e.volume)) : null,
               delivery_note: e.delivery_note || null,
-              strength_7d: e.strength_7d ? parseFloat(String(e.strength_7d)) : null,
-              strength_28d: e.strength_28d ? parseFloat(String(e.strength_28d)) : null,
+              test_age_1: e.test_age_1 ? parseInt(String(e.test_age_1)) : null,
+              strength_1: e.strength_1 ? parseFloat(String(e.strength_1)) : null,
+              test_age_2: e.test_age_2 ? parseInt(String(e.test_age_2)) : null,
+              strength_2: e.strength_2 ? parseFloat(String(e.strength_2)) : null,
               status: e.status,
             })
             .eq("id", e.id);
@@ -220,13 +228,15 @@ export function ConcreteControlTab({
               <th className="px-2 py-2 font-medium w-32">Membro Estrutural *</th>
               <th className="px-2 py-2 font-medium w-28">Data Moldagem *</th>
               <th className="px-2 py-2 font-medium">Fornecedor</th>
-              <th className="px-2 py-2 font-medium w-24">Classe (Fck)</th>
-              <th className="px-2 py-2 font-medium w-16 text-center">Slump (mm)</th>
-              <th className="px-2 py-2 font-medium w-16 text-center">Vol (m³)</th>
+              <th className="px-2 py-2 font-medium w-20">Classe (Fck)</th>
+              <th className="px-2 py-2 font-medium w-14 text-center">Slump (mm)</th>
+              <th className="px-2 py-2 font-medium w-14 text-center">Vol (m³)</th>
               <th className="px-2 py-2 font-medium">NF / Lacre</th>
-              <th className="px-2 py-2 font-medium w-16 text-center">7d (MPa)</th>
-              <th className="px-2 py-2 font-medium w-16 text-center">28d (MPa)</th>
-              <th className="px-2 py-2 font-medium w-28 text-center">Status</th>
+              <th className="px-2 py-2 font-medium w-14 text-center">Idade 1 (d)</th>
+              <th className="px-2 py-2 font-medium w-16 text-center">Fck 1 (MPa)</th>
+              <th className="px-2 py-2 font-medium w-14 text-center">Idade 2 (d)</th>
+              <th className="px-2 py-2 font-medium w-16 text-center">Fck 2 (MPa)</th>
+              <th className="px-2 py-2 font-medium w-24 text-center">Status</th>
               {canEdit && <th className="px-2 py-2 font-medium text-center w-10"></th>}
             </tr>
           </thead>
@@ -234,7 +244,7 @@ export function ConcreteControlTab({
             {entries.length === 0 ? (
               <tr>
                 <td
-                  colSpan={canEdit ? 11 : 10}
+                  colSpan={canEdit ? 13 : 12}
                   className="px-3 py-8 text-center text-muted-foreground text-xs italic"
                 >
                   Nenhum registro de controle tecnológico neste RDO.
@@ -252,6 +262,7 @@ export function ConcreteControlTab({
                       : ""
                   }
                 >
+                  {/* Membro Estrutural */}
                   <td className="px-2 py-1.5">
                     <input
                       type="text"
@@ -264,6 +275,7 @@ export function ConcreteControlTab({
                       placeholder="Ex: Laje L1"
                     />
                   </td>
+                  {/* Data Moldagem */}
                   <td className="px-2 py-1.5">
                     <input
                       type="date"
@@ -275,6 +287,7 @@ export function ConcreteControlTab({
                       className="w-full bg-transparent border-0 border-b border-transparent hover:border-gray-300 focus:border-primary-500 focus:ring-0 p-1 text-xs disabled:opacity-75"
                     />
                   </td>
+                  {/* Fornecedor */}
                   <td className="px-2 py-1.5">
                     <input
                       type="text"
@@ -285,6 +298,7 @@ export function ConcreteControlTab({
                       placeholder="Fornecedor"
                     />
                   </td>
+                  {/* Classe (Fck) */}
                   <td className="px-2 py-1.5">
                     <input
                       type="text"
@@ -297,6 +311,7 @@ export function ConcreteControlTab({
                       placeholder="Ex: C30"
                     />
                   </td>
+                  {/* Slump */}
                   <td className="px-2 py-1.5 text-center">
                     <input
                       type="number"
@@ -307,6 +322,7 @@ export function ConcreteControlTab({
                       placeholder="mm"
                     />
                   </td>
+                  {/* Volume */}
                   <td className="px-2 py-1.5 text-center">
                     <input
                       type="number"
@@ -318,6 +334,7 @@ export function ConcreteControlTab({
                       placeholder="m³"
                     />
                   </td>
+                  {/* NF / Lacre */}
                   <td className="px-2 py-1.5">
                     <input
                       type="text"
@@ -330,32 +347,61 @@ export function ConcreteControlTab({
                       placeholder="NF / Lacre"
                     />
                   </td>
-                  <td className="px-2 py-1.5 text-center">
+                  {/* Idade Ensaio 1 */}
+                  <td className="px-2 py-1.5 text-center bg-slate-50/50 dark:bg-slate-900/10">
+                    <input
+                      type="number"
+                      disabled={!canEdit}
+                      value={entry.test_age_1 ?? ""}
+                      onChange={(e) =>
+                        handleFieldChange(index, "test_age_1", e.target.value)
+                      }
+                      className="w-full text-center font-semibold bg-transparent border-0 border-b border-transparent hover:border-gray-300 focus:border-primary-500 focus:ring-0 p-1 text-xs disabled:opacity-75 text-blue-600 dark:text-blue-400"
+                      placeholder="dias"
+                    />
+                  </td>
+                  {/* Resistencia Ensaio 1 */}
+                  <td className="px-2 py-1.5 text-center bg-slate-50/50 dark:bg-slate-900/10">
                     <input
                       type="number"
                       step="any"
                       disabled={!canEdit}
-                      value={entry.strength_7d ?? ""}
+                      value={entry.strength_1 ?? ""}
                       onChange={(e) =>
-                        handleFieldChange(index, "strength_7d", e.target.value)
+                        handleFieldChange(index, "strength_1", e.target.value)
                       }
                       className="w-full text-center bg-transparent border-0 border-b border-transparent hover:border-gray-300 focus:border-primary-500 focus:ring-0 p-1 text-xs disabled:opacity-75"
                       placeholder="MPa"
                     />
                   </td>
-                  <td className="px-2 py-1.5 text-center">
+                  {/* Idade Ensaio 2 */}
+                  <td className="px-2 py-1.5 text-center bg-slate-100/30 dark:bg-slate-800/10">
+                    <input
+                      type="number"
+                      disabled={!canEdit}
+                      value={entry.test_age_2 ?? ""}
+                      onChange={(e) =>
+                        handleFieldChange(index, "test_age_2", e.target.value)
+                      }
+                      className="w-full text-center font-semibold bg-transparent border-0 border-b border-transparent hover:border-gray-300 focus:border-primary-500 focus:ring-0 p-1 text-xs disabled:opacity-75 text-amber-600 dark:text-amber-400"
+                      placeholder="dias"
+                    />
+                  </td>
+                  {/* Resistencia Ensaio 2 */}
+                  <td className="px-2 py-1.5 text-center bg-slate-100/30 dark:bg-slate-800/10">
                     <input
                       type="number"
                       step="any"
                       disabled={!canEdit}
-                      value={entry.strength_28d ?? ""}
+                      value={entry.strength_2 ?? ""}
                       onChange={(e) =>
-                        handleFieldChange(index, "strength_28d", e.target.value)
+                        handleFieldChange(index, "strength_2", e.target.value)
                       }
                       className="w-full text-center bg-transparent border-0 border-b border-transparent hover:border-gray-300 focus:border-primary-500 focus:ring-0 p-1 text-xs disabled:opacity-75"
                       placeholder="MPa"
                     />
                   </td>
+                  {/* Status */}
                   <td className="px-2 py-1.5">
                     <select
                       disabled={!canEdit}

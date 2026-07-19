@@ -436,42 +436,46 @@ export function RdoPrintLayout({
                         <th className="text-center w-20 p-1 border">Data Moldagem</th>
                         <th className="text-left p-1 border">Fornecedor</th>
                         <th className="text-center w-16 p-1 border">Classe (Fck)</th>
-                        <th className="text-center w-16 p-1 border">Slump (mm)</th>
-                        <th className="text-center w-16 p-1 border">Vol (m³)</th>
-                        <th className="text-left p-1 border">NF / Lacre</th>
-                        <th className="text-center w-12 p-1 border">Idade 1</th>
-                        <th className="text-center w-16 p-1 border">Fck 1 (MPa)</th>
-                        <th className="text-center w-12 p-1 border">Idade 2</th>
-                        <th className="text-center w-16 p-1 border">Fck 2 (MPa)</th>
-                        <th className="text-center w-20 p-1 border">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {concreteControl.map((entry: any) => {
-                        const dateParts = entry.molding_date.split('-');
-                        const formattedMoldingDate = dateParts.length === 3 
-                          ? `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}` 
-                          : entry.molding_date;
-                        return (
-                          <tr key={entry.id}>
-                            <td className="p-1 border font-medium">{entry.structural_element}</td>
-                            <td className="p-1 border text-center">{formattedMoldingDate}</td>
-                            <td className="p-1 border">{entry.supplier || "-"}</td>
-                            <td className="p-1 border text-center">{entry.concrete_class || "-"}</td>
-                            <td className="p-1 border text-center">{entry.slump || "-"}</td>
-                            <td className="p-1 border text-center">{entry.volume || "-"}</td>
-                            <td className="p-1 border">{entry.delivery_note || "-"}</td>
-                            <td className="p-1 border text-center font-semibold text-blue-600">{entry.test_age_1 ?? "-"}d</td>
-                            <td className="p-1 border text-center">{entry.strength_1 || "-"}</td>
-                            <td className="p-1 border text-center font-semibold text-amber-600">{entry.test_age_2 ?? "-"}d</td>
-                            <td className="p-1 border text-center">{entry.strength_2 || "-"}</td>
-                            <td className={`p-1 border text-center font-semibold ${
-                              entry.status === 'Aprovado' ? 'text-green-600' :
-                              entry.status === 'Reprovado' ? 'text-red-600' : 'text-amber-600'
-                            }`}>{entry.status}</td>
-                          </tr>
-                        );
-                      })}
+                         <th className="text-center w-16 p-1 border">Slump (mm)</th>
+                         <th className="text-center w-16 p-1 border">Espalh. (mm)</th>
+                         <th className="text-center w-14 p-1 border">Temp (ºC)</th>
+                         <th className="text-center w-16 p-1 border">Vol (m³)</th>
+                         <th className="text-left p-1 border">NF / Lacre</th>
+                         <th className="text-center w-12 p-1 border">Idade 1</th>
+                         <th className="text-center w-16 p-1 border">Fck 1 (MPa)</th>
+                         <th className="text-center w-12 p-1 border">Idade 2</th>
+                         <th className="text-center w-16 p-1 border">Fck 2 (MPa)</th>
+                         <th className="text-center w-20 p-1 border">Status</th>
+                       </tr>
+                     </thead>
+                     <tbody>
+                       {concreteControl.map((entry: any) => {
+                         const dateParts = entry.molding_date.split('-');
+                         const formattedMoldingDate = dateParts.length === 3 
+                           ? `${dateParts[2]}/${dateParts[1]}/${dateParts[0]}` 
+                           : entry.molding_date;
+                         return (
+                           <tr key={entry.id}>
+                             <td className="p-1 border font-medium">{entry.structural_element}</td>
+                             <td className="p-1 border text-center">{formattedMoldingDate}</td>
+                             <td className="p-1 border">{entry.supplier || "-"}</td>
+                             <td className="p-1 border text-center">{entry.concrete_class || "-"}</td>
+                             <td className="p-1 border text-center">{entry.slump || "-"}</td>
+                             <td className="p-1 border text-center">{entry.spread_test || "-"}</td>
+                             <td className="p-1 border text-center">{entry.average_temperature || "-"}</td>
+                             <td className="p-1 border text-center">{entry.volume || "-"}</td>
+                             <td className="p-1 border">{entry.delivery_note || "-"}</td>
+                             <td className="p-1 border text-center font-semibold text-blue-600">{entry.test_age_1 ?? "-"}d</td>
+                             <td className="p-1 border text-center">{entry.strength_1 || "-"}</td>
+                             <td className="p-1 border text-center font-semibold text-amber-600">{entry.test_age_2 ?? "-"}d</td>
+                             <td className="p-1 border text-center">{entry.strength_2 || "-"}</td>
+                             <td className={`p-1 border text-center font-semibold ${
+                               entry.status === 'Aprovado' ? 'text-green-600' :
+                               entry.status === 'Reprovado' ? 'text-red-600' : 'text-amber-600'
+                             }`}>{entry.status}</td>
+                           </tr>
+                         );
+                       })}
                     </tbody>
                   </table>
                 )}

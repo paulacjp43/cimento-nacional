@@ -20,6 +20,8 @@ interface ConcreteEntry {
   strength_1: number | string | null;
   test_age_2: number | string | null;
   strength_2: number | string | null;
+  spread_test: number | string | null;
+  average_temperature: number | string | null;
   status: string;
   daily_report_id?: string | null;
   company_id?: string | null;
@@ -82,6 +84,8 @@ export function ConcreteControlTab({
       strength_1: "",
       test_age_2: 28,
       strength_2: "",
+      spread_test: "",
+      average_temperature: "",
       status: "Aguardando",
     };
     setEntries((prev) => [...prev, newRow]);
@@ -152,6 +156,8 @@ export function ConcreteControlTab({
           strength_1: e.strength_1 ? parseFloat(String(e.strength_1)) : null,
           test_age_2: e.test_age_2 ? parseInt(String(e.test_age_2)) : null,
           strength_2: e.strength_2 ? parseFloat(String(e.strength_2)) : null,
+          spread_test: e.spread_test ? parseInt(String(e.spread_test)) : null,
+          average_temperature: e.average_temperature ? parseFloat(String(e.average_temperature)) : null,
           status: e.status || "Aguardando",
         }));
 
@@ -179,6 +185,8 @@ export function ConcreteControlTab({
               strength_1: e.strength_1 ? parseFloat(String(e.strength_1)) : null,
               test_age_2: e.test_age_2 ? parseInt(String(e.test_age_2)) : null,
               strength_2: e.strength_2 ? parseFloat(String(e.strength_2)) : null,
+              spread_test: e.spread_test ? parseInt(String(e.spread_test)) : null,
+              average_temperature: e.average_temperature ? parseFloat(String(e.average_temperature)) : null,
               status: e.status,
             })
             .eq("id", e.id);
@@ -230,6 +238,8 @@ export function ConcreteControlTab({
               <th className="px-2 py-2 font-medium">Fornecedor</th>
               <th className="px-2 py-2 font-medium w-20">Classe (Fck)</th>
               <th className="px-2 py-2 font-medium w-14 text-center">Slump (mm)</th>
+              <th className="px-2 py-2 font-medium w-14 text-center">Espalh. (mm)</th>
+              <th className="px-2 py-2 font-medium w-14 text-center">Temp (ºC)</th>
               <th className="px-2 py-2 font-medium w-14 text-center">Vol (m³)</th>
               <th className="px-2 py-2 font-medium">NF / Lacre</th>
               <th className="px-2 py-2 font-medium w-14 text-center">Idade 1 (d)</th>
@@ -244,7 +254,7 @@ export function ConcreteControlTab({
             {entries.length === 0 ? (
               <tr>
                 <td
-                  colSpan={canEdit ? 13 : 12}
+                  colSpan={canEdit ? 15 : 14}
                   className="px-3 py-8 text-center text-muted-foreground text-xs italic"
                 >
                   Nenhum registro de controle tecnológico neste RDO.
@@ -320,6 +330,29 @@ export function ConcreteControlTab({
                       onChange={(e) => handleFieldChange(index, "slump", e.target.value)}
                       className="w-full text-center bg-transparent border-0 border-b border-transparent hover:border-gray-300 focus:border-primary-500 focus:ring-0 p-1 text-xs disabled:opacity-75"
                       placeholder="mm"
+                    />
+                  </td>
+                  {/* Espalhamento */}
+                  <td className="px-2 py-1.5 text-center">
+                    <input
+                      type="number"
+                      disabled={!canEdit}
+                      value={entry.spread_test ?? ""}
+                      onChange={(e) => handleFieldChange(index, "spread_test", e.target.value)}
+                      className="w-full text-center bg-transparent border-0 border-b border-transparent hover:border-gray-300 focus:border-primary-500 focus:ring-0 p-1 text-xs disabled:opacity-75"
+                      placeholder="mm"
+                    />
+                  </td>
+                  {/* Temperatura Média */}
+                  <td className="px-2 py-1.5 text-center">
+                    <input
+                      type="number"
+                      step="any"
+                      disabled={!canEdit}
+                      value={entry.average_temperature ?? ""}
+                      onChange={(e) => handleFieldChange(index, "average_temperature", e.target.value)}
+                      className="w-full text-center bg-transparent border-0 border-b border-transparent hover:border-gray-300 focus:border-primary-500 focus:ring-0 p-1 text-xs disabled:opacity-75"
+                      placeholder="ºC"
                     />
                   </td>
                   {/* Volume */}

@@ -209,6 +209,8 @@ export type Database = {
           strength_1: number | null
           test_age_2: number | null
           strength_2: number | null
+          spread_test: number | null
+          average_temperature: number | null
           status: string
           created_at: string | null
           updated_at: string | null
@@ -229,6 +231,8 @@ export type Database = {
           strength_1?: number | null
           test_age_2?: number | null
           strength_2?: number | null
+          spread_test?: number | null
+          average_temperature?: number | null
           status?: string
           created_at?: string | null
           updated_at?: string | null
@@ -249,6 +253,8 @@ export type Database = {
           strength_1?: number | null
           test_age_2?: number | null
           strength_2?: number | null
+          spread_test?: number | null
+          average_temperature?: number | null
           status?: string
           created_at?: string | null
           updated_at?: string | null
